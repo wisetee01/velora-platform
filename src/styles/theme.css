@@ -1,0 +1,90 @@
+/* Custom Global Brand Design Variables */
+:root {
+  --bg-deep-purple: #0F051D;
+  --bg-dark-card: #130924;
+  --neon-violet: #8B5CF6;
+  --neon-violet-glow: #A78BFA;
+  --gold-accent: #FBBF24;
+  --gold-glow: #F59E0B;
+  --text-white: #FFFFFF;
+  --text-slate: #E2E8F0;
+}
+
+/* Global Reset Optimization */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-deep-purple);
+  color: var(--text-slate);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Base Canvas Utility Class */
+.velora-canvas {
+  background: radial-gradient(circle at top center, #1E0B3B 0%, var(--bg-deep-purple) 70%);
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Premium Neon Glow Structural Frames */
+.neon-border-glow {
+  border: 1px solid var(--neon-violet);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4), inset 0 0 10px rgba(139, 92, 246, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.neon-border-glow:hover {
+  box-shadow: 0 0 25px rgba(167, 139, 250, 0.6), inset 0 0 15px rgba(167, 139, 250, 0.3);
+  border-color: var(--neon-violet-glow);
+}
+
+/* Metallic Gold Accent Enhancements */
+.gold-text-accent {
+  color: var(--gold-accent);
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+}
+
+.gold-border-frame {
+  border: 2px solid var(--gold-accent);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+}
+
+/* Animated Interactive CTA Micro-interactions */
+.premium-pulse-button {
+  background: linear-gradient(135deg, var(--neon-violet) 0%, #6D28D9 100%);
+  border: 1px solid var(--gold-accent);
+  color: var(--text-white);
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.premium-pulse-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.6), 0 0 10px rgba(251, 191, 36, 0.4);
+}
+
+.premium-pulse-button:active {
+  transform: translateY(1px);
+}
+
+/* Velora Structural Loading Spinner Core */
+.velora-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(139, 92, 246, 0.2);
+  border-top: 5px solid var(--neon-violet);
+  border-radius: 50%;
+  animation: velora-spin 1s linear infinite;
+}
+
+@keyframes velora-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

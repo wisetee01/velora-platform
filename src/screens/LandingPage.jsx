@@ -5,8 +5,9 @@ import PackageCard from "../components/PackageCard";
 export default function LandingPage({ onNavigate }) {
   // Production marketing content strings
   const promotionalFliers = [
-    { title: "🔥 Massive Daily Payouts", text: "Learn how smart affiliates rake in consistent income weekly directly into local bank accounts using the Velora engine tools." },
-    { title: "🎓 Advanced Affiliate Mentorship", text: "Get lifetime access to premium marketing guides, swipe files, and organic traffic frameworks that unlock absolute conversions." }
+    { title: "Post on WhatsApp Status (Earn Up to ₦125k Daily)", text: "What to do 👉Download the AI music videos on the platform. Action: Post them on your WhatsApp Status. Payment⚠️ : Get paid based on your views and consistency." },
+    { title: "Get Quick Business Loans", text: "What to do: Apply inside the app. Action: No heavy paper, no guarantor, no headache.  Payment⚠️ : Get fast cash credited to expand your business.  " },
+    { title: "Watch & Rate Videos (Earn ₦10k – ₦20k Daily)", text: "What to do: Watch one short AI video daily. Action: Just give it a star rating. Payment⚠️ : Make ₦10,000 to ₦20,000 every day. " },
   ];
 
   const platinumFeatures = ["Access to Platinum Dashboard", "₦8,000 Immediate Welcome Voucher", "Daily Affiliate Commision Access", "24/7 Premium Telegram Channel VIP Invite"];
@@ -31,11 +32,17 @@ export default function LandingPage({ onNavigate }) {
       {/* Hero Visual Section Container */}
       <section style={{ textAlign: "center", maxWidth: "800px", marginTop: "40px" }}>
         <h2 style={{ fontSize: "42px", fontWeight: "800", color: "var(--text-white)", marginBottom: "20px", lineHeight: "1.2" }}>
-          The Ultimate Affiliate System <br />
-          Built For <span className="gold-text-accent">High Performance</span>
+      
+         just 5 minutes a day on your phone and wake up to a alerts in Dollars,<br /> straight to your Nigerian bank app? <span className="gold-text-accent">Welcome to VELORA—the ultimate platform where your opinion, your phone, and your WhatsApp Status become an unstoppable money-making machine.</span>
         </h2>
         <p style={{ color: "var(--text-slate)", fontSize: "16px", lineHeight: "1.6", marginBottom: "32px" }}>
-          Discover how the Velora automated ecosystem operates. Upload marketing materials, explore high-converting product matrices, and capture consistent commissions instantly.
+         Why Global Earners Are Rushing to VELORA <br />
+
+Earn in Dollars: Get paid in USD, cash out straight to your Nigerian bank account. <br />
+
+Instant Welcome Bonus: Get ₦8,000 to ₦13,000 back to WITHDRAW immediately you register. <br />
+
+Urgent Loans: Borrow money to start or grow your business with zero collateral and no stress. 
         </p>
         <CTAButton styleOverrides={{ fontSize: "16px", padding: "16px 36px" }} />
       </section>

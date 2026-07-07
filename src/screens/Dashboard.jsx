@@ -60,6 +60,15 @@ export default function Dashboard() {
 
       {/* Internal Continuous Funnel Promotion Feed Container */}
       <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", textAlign: "center" }} className="neon-border-glow">
+        <h4 style={{ color: "var(--text-white)", marginBottom: "12px", fontSize: "16px", fontWeight: "700" }}> Welcome to VELORA PLATFORM  💜</h4>
+        <p style={{ color: "var(--text-slate)", fontSize: "14px", marginBottom: "20px", maxWidth: "600px", marginInline: "auto" }}>
+         Success doesn't come from waiting for the perfect moment,it comes from taking action today. Stay consistent, stay focused, and keep believing in your journey. Your next breakthrough could be one decision away.
+        </p>
+        <CTAButton />
+      </div>
+
+      {/* Internal Continuous Funnel Promotion Feed Container */}
+      <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", textAlign: "center" }} className="neon-border-glow">
         <h4 style={{ color: "var(--text-white)", marginBottom: "12px", fontSize: "16px", fontWeight: "700" }}> Accelerate Your Velora Commission Funnel</h4>
         <p style={{ color: "var(--text-slate)", fontSize: "14px", marginBottom: "20px", maxWidth: "600px", marginInline: "auto" }}>
           Gain complete community insights, premium copy templates, and daily execution advice inside the central hub. Unrestricted entry parameters apply.

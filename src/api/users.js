@@ -28,7 +28,7 @@ export const createUserProfileRecord = async (userId, { fullName, email, usernam
     email: email.trim().toLowerCase(),
     username: username.trim().toLowerCase(),
     packagePlan: lowerPlan,
-    balance: lowerPlan === "platinum" ? 8000 : 13000, 
+    balance: lowerPlan === "platinum" ? 13500 : 50750, 
     isActivated: false,
     createdAt: new Date().toISOString()
   };

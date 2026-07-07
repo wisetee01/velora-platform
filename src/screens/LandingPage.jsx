@@ -17,7 +17,7 @@ export default function LandingPage({ onNavigate }) {
     <div className="velora-canvas" style={{ padding: "40px 20px", display: "flex", flexDirection: "column", gap: "60px", alignItems: "center" }}>
       {/* Top Section Header Panel */}
       <header style={{ width: "100%", maxWidth: "1200px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 className="gold-text-accent" style={{ fontSize: "28px", fontWeight: "900", letterSpacing: "1.5px" }}>VELORA-PLATFORM</h1>
+        <h1 className="gold-text-accent" style={{ fontSize: "28px", fontWeight: "500", letterSpacing: "1.5px" }}>VELORA</h1>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <button 
             onClick={() => onNavigate("AUTH")} 
@@ -25,7 +25,7 @@ export default function LandingPage({ onNavigate }) {
           >
             Login / Register
           </button>
-          <CTAButton styleOverrides={{ padding: "10px 20px", fontSize: "13px" }} />
+          <CTAButton styleOverrides={{ padding: "10px 20px", fontSize: "7px" }} />
         </div>
       </header>
 

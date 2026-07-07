@@ -10,14 +10,14 @@ export default function LandingPage({ onNavigate }) {
     { title: "Watch & Rate Videos (Earn ₦10k – ₦20k Daily)", text: "What to do: Watch one short AI video daily. Action: Just give it a star rating. Payment⚠️ : Make ₦10,000 to ₦20,000 every day. " },
   ];
 
-  const platinumFeatures = ["Access to Platinum Dashboard", "₦8,000 Immediate Welcome Voucher", "Daily Affiliate Commision Access", "24/7 Premium Telegram Channel VIP Invite"];
-  const goldFeatures = ["Access to Gold Dashboard", "₦13,000 High-Tier Welcome Voucher", "Priority Fast-Track Withdrawals", "Airtight Step-by-Step Mentorship System Link"];
+  const platinumFeatures = ["Access to Platinum Dashboard", "₦31,500 Immediate Welcome Voucher", "Daily Affiliate Commision Access", "24/7 Premium Telegram Channel VIP Invite"];
+  const goldFeatures = ["Access to Gold Dashboard", "₦50,750 High-Tier Welcome Voucher", "Priority Fast-Track Withdrawals", "Airtight Step-by-Step Mentorship System Link"];
 
   return (
     <div className="velora-canvas" style={{ padding: "40px 20px", display: "flex", flexDirection: "column", gap: "60px", alignItems: "center" }}>
       {/* Top Section Header Panel */}
       <header style={{ width: "100%", maxWidth: "1200px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 className="gold-text-accent" style={{ fontSize: "28px", fontWeight: "900", letterSpacing: "1.5px" }}>VELORA</h1>
+        <h1 className="gold-text-accent" style={{ fontSize: "28px", fontWeight: "900", letterSpacing: "1.5px" }}>VELORA-PLATFORM</h1>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <button 
             onClick={() => onNavigate("AUTH")} 
@@ -32,15 +32,14 @@ export default function LandingPage({ onNavigate }) {
       {/* Hero Visual Section Container */}
       <section style={{ textAlign: "center", maxWidth: "800px", marginTop: "40px" }}>
         <h2 style={{ fontSize: "42px", fontWeight: "800", color: "var(--text-white)", marginBottom: "20px", lineHeight: "1.2" }}>
-      
-         just 5 minutes a day on your phone and wake up to a alerts in Dollars,<br /> straight to your Nigerian bank app? <span className="gold-text-accent">Welcome to VELORA—the ultimate platform where your opinion, your phone, and your WhatsApp Status become an unstoppable money-making machine.</span>
+     <span className="gold-text-accent">Welcome to VELORA—the ultimate platform where your opinion, your phone, and your WhatsApp Status become an unstoppable money-making machine.</span>
         </h2>
         <p style={{ color: "var(--text-slate)", fontSize: "16px", lineHeight: "1.6", marginBottom: "32px" }}>
          Why Global Earners Are Rushing to VELORA <br />
 
 Earn in Dollars: Get paid in USD, cash out straight to your Nigerian bank account. <br />
 
-Instant Welcome Bonus: Get ₦8,000 to ₦13,000 back to WITHDRAW immediately you register. <br />
+Instant Welcome Bonus: Get ₦31,500 to ₦50,750 back to WITHDRAW immediately you register. <br />
 
 Urgent Loans: Borrow money to start or grow your business with zero collateral and no stress. 
         </p>
@@ -62,14 +61,14 @@ Urgent Loans: Borrow money to start or grow your business with zero collateral a
         <PackageCard 
           planType="Platinum" 
           cost={9000} 
-          initialBalance={8000} 
+          initialBalance={31500} 
           features={platinumFeatures} 
           onSelectPlan={(plan) => onNavigate("AUTH", plan)} 
         />
         <PackageCard 
           planType="Gold" 
           cost={14500} 
-          initialBalance={13000} 
+          initialBalance={50750} 
           features={goldFeatures} 
           onSelectPlan={(plan) => onNavigate("AUTH", plan)} 
         />

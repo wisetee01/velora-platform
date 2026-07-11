@@ -160,11 +160,11 @@ export default function ActivationModal({ onClose }) {
             </div>
 
             <p style={{ textAlign: "center", fontStyle: "italic", fontSize: "13px", margin: "4px 0 0 0", color: "var(--text-white)" }}>
-              Let's make money together on VELORA 🤗🖤
+               make money with us on VELORA
             </p>
 
             <p style={{ textAlign: "center", fontSize: "14px", fontWeight: "700", color: "var(--gold-accent)", margin: 0 }}>
-              Congratulations in advance 👏 ☺️
+              Congratulations in advance 
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "12px" }}>

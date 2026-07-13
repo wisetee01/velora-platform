@@ -14,6 +14,10 @@ export default function ActivationModal({ onClose }) {
 
   if (!userProfile) return null;
 
+  // DYNAMIC PRICE CHECKER: Determine the exact price based on user's registered package plan string
+  const userPlan = userProfile.packagePlan ? userProfile.packagePlan.toLowerCase() : "platinum";
+  const explicitAmountToPay = userPlan === "gold" ? "₦14,500" : "₦9,000";
+
   const handlePaymentExecution = () => {
     setShowBankDetails(true);
   };
@@ -23,13 +27,12 @@ export default function ActivationModal({ onClose }) {
     window.location.href = fallbackUrl;
   };
 
-  // Safe universal clipboard copier function
   const handleCopyToClipboard = (textToCopy, fieldIdentifier) => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(textToCopy)
         .then(() => {
           setCopiedField(fieldIdentifier);
-          setTimeout(() => setCopiedField(""), 2000); // Reset text back after 2 seconds
+          setTimeout(() => setCopiedField(""), 2000);
         })
         .catch((err) => console.error("Could not copy text: ", err));
     }
@@ -118,6 +121,16 @@ export default function ActivationModal({ onClose }) {
               MANUAL VERIFICATION
             </h3>
             
+            {/* DYNAMIC AMOUNT ANCHOR: Boldly alerts the user on the exact amount required for their selected package */}
+            <div style={{ background: "rgba(218, 165, 32, 0.15)", border: "1px solid var(--gold-accent)", padding: "14px", borderRadius: "8px", textAlign: "center" }}>
+              <p style={{ margin: 0, fontSize: "14px", color: "var(--text-white)" }}>
+                You choose the <strong style={{ color: "var(--gold-accent)", textTransform: "uppercase" }}>{userPlan}</strong> plan.
+              </p>
+              <p style={{ margin: "4px 0 0 0", fontSize: "18px", color: "var(--text-white)" }}>
+                Please transfer exactly: <strong style={{ color: "#FFF", fontSize: "24px", fontWeight: "900" }}>{explicitAmountToPay}</strong>
+              </p>
+            </div>
+
             <p style={{ fontSize: "14px", lineHeight: "1.5", color: "var(--text-white)", margin: 0 }}>
               Make a payment to one of Our Verified Merchant accounts below.
             </p>
@@ -128,7 +141,6 @@ export default function ActivationModal({ onClose }) {
               </p>
             </div>
 
-            {/* Merchant Details with Instant Click-To-Copy Fields */}
             <div style={{ background: "var(--bg-deep-purple, #1a102f)", padding: "16px", borderRadius: "8px", border: "1px solid var(--neon-violet, #8b5cf6)", display: "flex", flexDirection: "column", gap: "10px" }}>
               
               <div style={rowStyle}>
@@ -160,7 +172,7 @@ export default function ActivationModal({ onClose }) {
             </div>
 
             <p style={{ textAlign: "center", fontStyle: "italic", fontSize: "13px", margin: "4px 0 0 0", color: "var(--text-white)" }}>
-               make money with us on VELORA
+              Let's make money together on VELORA
             </p>
 
             <p style={{ textAlign: "center", fontSize: "14px", fontWeight: "700", color: "var(--gold-accent)", margin: 0 }}>

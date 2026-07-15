@@ -144,7 +144,7 @@ export default function ActivationModal({ onClose }) {
             <div style={{ background: "var(--bg-deep-purple, #1a102f)", padding: "16px", borderRadius: "8px", border: "1px solid var(--neon-violet, #8b5cf6)", display: "flex", flexDirection: "column", gap: "10px" }}>
               
               <div style={rowStyle}>
-                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Bank Name: <strong style={{ color: "#fff" }}>9 Payment Service Bank</strong></p>
+                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Bank Name: <strong style={{ color: "#fff" }}> MONIEPOINT MFB</strong></p>
                 <button 
                   type="button" 
                   style={copyButtonStyle} 
@@ -159,7 +159,7 @@ export default function ActivationModal({ onClose }) {
               </div>
 
               <div style={rowStyle}>
-                <p style={{ margin: 0, fontSize: "15px", color: "var(--text-slate)" }}>Account Number: <strong className="gold-text-accent" style={{ fontSize: "18px", letterSpacing: "1px" }}>6095786597</strong></p>
+                <p style={{ margin: 0, fontSize: "15px", color: "var(--text-slate)" }}>Account Number: <strong className="gold-text-accent" style={{ fontSize: "18px", letterSpacing: "1px" }}>8128373375</strong></p>
                 <button 
                   type="button" 
                   style={{ ...copyButtonStyle, background: "var(--gold-accent)", color: "var(--bg-deep-purple)", border: "none" }} 

@@ -8,6 +8,10 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // NEW STATES: Control password character visibility switches independently
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [formState, setFormState] = useState({
     fullName: "",
     email: "",
@@ -59,6 +63,31 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
     }
   };
 
+  // Reusable styling configurations for text fields and alignment layouts
+  const inputStyle = {
+    width: "100%",
+    padding: "12px 42px 12px 12px", // Padded right edge so long input values do not clip into toggle text
+    borderRadius: "8px",
+    background: "var(--bg-deep-purple)",
+    border: "1px solid var(--neon-violet)",
+    color: "var(--text-white)",
+    outline: "none"
+  };
+
+  const eyeToggleStyle = {
+    position: "absolute",
+    right: "12px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: "transparent",
+    border: "none",
+    color: "var(--text-slate)",
+    cursor: "pointer",
+    fontSize: "14px",
+    userSelect: "none",
+    padding: 0
+  };
+
   return (
     <div className="velora-canvas" style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
       <div className="neon-border-glow" style={{ background: "var(--bg-dark-card)", maxWidth: "440px", width: "100%", padding: "36px 28px", borderRadius: "16px" }}>
@@ -91,11 +120,11 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
             <>
               <div>
                 <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)", marginBottom: "6px" }}>Full Name</label>
-                <input type="text" name="fullName" value={formState.fullName} onChange={handleInputChange} style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "var(--bg-deep-purple)", border: "1px solid var(--neon-violet)", color: "var(--text-white)", outline: "none" }} />
+                <input type="text" autoComplete="name" name="fullName" value={formState.fullName} onChange={handleInputChange} style={{ ...inputStyle, paddingRight: "12px" }} />
               </div>
               <div>
                 <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)", marginBottom: "6px" }}>Preferred Username</label>
-                <input type="text" name="username" value={formState.username} onChange={handleInputChange} style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "var(--bg-deep-purple)", border: "1px solid var(--neon-violet)", color: "var(--text-white)", outline: "none" }} />
+                <input type="text" autoComplete="username" name="username" value={formState.username} onChange={handleInputChange} style={{ ...inputStyle, paddingRight: "12px" }} />
               </div>
               <div>
                 <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)", marginBottom: "6px" }}>Select Tier package</label>
@@ -109,25 +138,59 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
 
           <div>
             <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)", marginBottom: "6px" }}>Email Address</label>
-            <input type="email" name="email" value={formState.email} onChange={handleInputChange} style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "var(--bg-deep-purple)", border: "1px solid var(--neon-violet)", color: "var(--text-white)", outline: "none" }} />
+            <input type="email" autoComplete="email" name="email" value={formState.email} onChange={handleInputChange} style={{ ...inputStyle, paddingRight: "12px" }} />
           </div>
 
           <div>
             <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)", marginBottom: "6px" }}>Password</label>
-            <input type="password" name="password" value={formState.password} onChange={handleInputChange} style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "var(--bg-deep-purple)", border: "1px solid var(--neon-violet)", color: "var(--text-white)", outline: "none" }} />
+            <div style={{ position: "relative" }}>
+              <input 
+                type={showPassword ? "text" : "password"} 
+                autoComplete={isRegisterMode ? "new-password" : "current-password"} 
+                name="password" 
+                value={formState.password} 
+                onChange={handleInputChange} 
+                style={inputStyle} 
+              />
+              <button 
+                type="button" 
+                style={eyeToggleStyle} 
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "👁️" : "🙈"}
+              </button>
+            </div>
           </div>
 
           {isRegisterMode && (
             <div>
               <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)", marginBottom: "6px" }}>Confirm Password</label>
-              <input type="password" name="confirmPassword" value={formState.confirmPassword} onChange={handleInputChange} style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "var(--bg-deep-purple)", border: "1px solid var(--neon-violet)", color: "var(--text-white)", outline: "none" }} />
+              <div style={{ position: "relative" }}>
+                <input 
+                  type={showConfirmPassword ? "text" : "password"} 
+                  autoComplete="new-password" 
+                  name="confirmPassword" 
+                  value={formState.confirmPassword} 
+                  onChange={handleInputChange} 
+                  style={inputStyle} 
+                />
+                <button 
+                  type="button" 
+                  style={eyeToggleStyle} 
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  {showConfirmPassword ? "👁️" : "🙈"}
+                </button>
+              </div>
             </div>
           )}
 
           <button 
             type="submit" 
             className="premium-pulse-button" 
-            style={{ width: "100%", padding: "14px", borderRadius: "8px", marginTop: "12px" }}
+            style={{ width: "100%", padding: "14px", borderRadius: "8px", marginTop: "12px", cursor: "pointer" }}
             disabled={isSubmitting}
           >
             {isSubmitting ? "PROCESSING TRANSACTION..." : isRegisterMode ? "COMPLETE REGISTRATION" : "SECURE LOGIN"}

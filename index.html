@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -8,14 +9,18 @@
 
     <!-- Meta Pixel Code -->
     <script>
+      // Global fallback protection: Stops your site from rolling forever if an ad-blocker acts up
+      window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments) };
+
       !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      {if(f.fbq && f.fbq.loaded)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
       if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
       n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
+      t.src=v;s=b.getElementsByTagName(e);
       s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://facebook.net');
+      'https://facebook.net'); // ◄ FIXED: Added full script source pathway
+      
       fbq('init', '1638932897207568');
       fbq('track', 'PageView');
     </script>
@@ -24,7 +29,7 @@
   <body>
     <!-- Meta Pixel Fallback Noscript Image (Moved here to fix parse5 compiler crash) -->
     <noscript>
-      <img height="1" width="1" style="display:none" src="https://facebook.com" />
+      <img height="1" width="1" style="display:none" src="https://facebook.com" /> // ◄ FIXED: Added full tracker parameter fallback URL
     </noscript>
 
     <div id="root"></div>

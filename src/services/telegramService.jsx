@@ -25,5 +25,5 @@ export const generateActivationProofUrl = (username, referenceId) => {
  */
 export const getMentorshipChannelUrl = () => {
   // Replace this placeholder with your exact public mentorship group invite link
-  return "https://t.me/veloraofficiiall";
+  return "https://t.me/glamourofficiiall";
 };

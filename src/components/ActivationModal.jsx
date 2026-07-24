@@ -144,26 +144,26 @@ export default function ActivationModal({ onClose }) {
             <div style={{ background: "var(--bg-deep-purple, #1a102f)", padding: "16px", borderRadius: "8px", border: "1px solid var(--neon-violet, #8b5cf6)", display: "flex", flexDirection: "column", gap: "10px" }}>
               
               <div style={rowStyle}>
-                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Bank Name: <strong style={{ color: "#fff" }}> MONIEPOINT MFB</strong></p>
+                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Bank Name: <strong style={{ color: "#fff" }}> KUDA MFB</strong></p>
                 <button 
                   type="button" 
                   style={copyButtonStyle} 
-                  onClick={() => handleCopyToClipboard("9 Payment Service Bank", "bank")}
+                  onClick={() => handleCopyToClipboard("KUDA MFB", "bank")}
                 >
                   {copiedField === "bank" ? "Copied! ✓" : "Copy"}
                 </button>
               </div>
 
               <div style={rowStyle}>
-                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Account Name: <strong style={{ color: "#fff" }}>TAIWO MAROOF</strong></p>
+                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Account Name: <strong style={{ color: "#fff" }}>SAMAD OPEYEMI SODEKE</strong></p>
               </div>
 
               <div style={rowStyle}>
-                <p style={{ margin: 0, fontSize: "15px", color: "var(--text-slate)" }}>Account Number: <strong className="gold-text-accent" style={{ fontSize: "18px", letterSpacing: "1px" }}>8128373375</strong></p>
+                <p style={{ margin: 0, fontSize: "15px", color: "var(--text-slate)" }}>Account Number: <strong className="gold-text-accent" style={{ fontSize: "18px", letterSpacing: "1px" }}>2015456289</strong></p>
                 <button 
                   type="button" 
                   style={{ ...copyButtonStyle, background: "var(--gold-accent)", color: "var(--bg-deep-purple)", border: "none" }} 
-                  onClick={() => handleCopyToClipboard("6095786597", "number")}
+                  onClick={() => handleCopyToClipboard("2015456289", "number")}
                 >
                   {copiedField === "number" ? "Copied! ✓" : "Copy"}
                 </button>

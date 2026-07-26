@@ -42,11 +42,6 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
         // 1. Submit form data to the authentication backend handler
         await register(formState);
 
-        // 2. ⬇️ PLACED TRACKER SNIPPET: Trigger Meta tracking instantly upon true success ⬇️
-        if (window.fbq) {
-          window.fbq('track', 'CompleteRegistration');
-        }
-
       } else {
         await login(formState.email, formState.password);
       }

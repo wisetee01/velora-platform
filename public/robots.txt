@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /$
+Allow: /?page=auth
+Disallow: /src/
+Disallow: /node_modules/
+
+Sitemap: https://velora-platform.vercel.app

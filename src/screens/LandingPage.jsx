@@ -16,18 +16,27 @@ export default function LandingPage({ onNavigate }) {
   return (
     <div className="velora-canvas" style={{ padding: "40px 20px", display: "flex", flexDirection: "column", gap: "60px", alignItems: "center" }}>
       {/* Top Section Header Panel */}
+       {/* =========================================================================
+          UPDATED OPTIMIZED HEADER: Strong Semantic Brand Signals for Google Sitelinks
+          ========================================================================= */}
       <header style={{ width: "100%", maxWidth: "1200px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 className="gold-text-accent" style={{ fontSize: "28px", fontWeight: "500", letterSpacing: "1.5px" }}>VELORA</h1>
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        {/* Font weight increased to 900 for explicit search-engine brand anchoring */}
+        <h1 className="gold-text-accent" style={{ fontSize: "28px", fontWeight: "900", letterSpacing: "1.5px", margin: 0 }}>
+          VELORA
+        </h1>
+        <nav style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <button 
             onClick={() => onNavigate("AUTH")} 
             style={{ background: "transparent", border: "none", color: "var(--text-white)", cursor: "pointer", fontWeight: "600" }}
+            aria-label="Velora Login or Registration"
           >
             Login / Register
           </button>
-          <CTAButton styleOverrides={{ padding: "10px 20px", fontSize: "7px" }} />
-        </div>
+          {/* Component kept clean to prevent nested tag crashes while allowing font size mapping */}
+          <CTAButton styleOverrides={{ padding: "10px 20px", fontSize: "11px" }} />
+        </nav>
       </header>
+      {/* ========================================================================= */}
 
       {/* Hero Visual Section Container */}
       <section style={{ textAlign: "center", maxWidth: "800px", marginTop: "40px" }}>

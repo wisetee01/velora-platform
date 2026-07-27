@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://sitemaps.org">
   <url>
-    <loc>https://velora-platform.vercel.app</loc>
+    <loc>https://velora-platform.vercel.app/</loc>
     <lastmod>2026-07-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -13,3 +13,4 @@
     <priority>0.8</priority>
   </url>
 </urlset>
+

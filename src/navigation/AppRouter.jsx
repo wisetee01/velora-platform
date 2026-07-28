@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-// Lazy import mappings to prevent circular reference compilation breaks across layers
+// Reusable structural component imports with verified project root paths
 import LandingPage from "../screens/LandingPage";
 import AuthScreen from "../screens/AuthScreen";
 import Dashboard from "../screens/Dashboard";
@@ -14,6 +14,9 @@ export default function AppRouter() {
   const { currentUser, isLoading } = useAuth();
   const [authScreenView, setAuthScreenView] = useState("LANDING"); // Values: "LANDING" or "AUTH"
   const [selectedPlan, setSelectedPlan] = useState(null);
+  
+  // Custom router state tracking registration overrides to trigger automatic popups
+  const [forceActivationPopup, setForceActivationPopup] = useState(false);
 
   /**
    * Universal structural routing switcher function.
@@ -24,12 +27,16 @@ export default function AppRouter() {
       setSelectedPlan(planContext);
     }
     
-    if (targetScreen === "LANDING" || targetScreen === "AUTH") {
+    // Catch the special registration success signal to arm the dashboard auto-open flag
+    if (targetScreen === "DASHBOARD_WITH_ACTIVATION_FORCE") {
+      setForceActivationPopup(true);
+      setAuthScreenView("LANDING"); // Reset landing router viewport state parameters
+    } else if (targetScreen === "LANDING" || targetScreen === "AUTH") {
       setAuthScreenView(targetScreen);
     }
   };
 
-  // Render using global brand style variables injected from Layer 8 (theme.css)
+  // Render using global brand style variables injected from theme configurations
   if (isLoading) {
     return (
       <div className="velora-canvas" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -40,7 +47,13 @@ export default function AppRouter() {
 
   // UNBREACHABLE GUARD RULE: If a valid authentication user session exists, ALWAYS force Dashboard
   if (currentUser) {
-    return <Dashboard onNavigate={navigateTo} />;
+    return (
+      <Dashboard 
+        onNavigate={navigateTo} 
+        forceOpenActivation={forceActivationPopup} 
+        onClearForceOpen={() => setForceActivationPopup(false)} 
+      />
+    );
   }
 
   // Fallback to public routes if no active authentication session is discovered

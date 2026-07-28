@@ -1,12 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { formatToNaira } from "../utils/formatters";
 import ActivationModal from "../components/ActivationModal";
 import CTAButton from "../components/CTAButton";
 
-export default function Dashboard() {
+export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
   const { userProfile, logout } = useAuth();
-  const [isModalMounted, setIsModalMounted] = useState(false);
+  const [isActivationModalOpen, setIsActivationModalOpen] = useState(false);
+
+  // ⬇️ BULLETPROOF STATE TRACKER: Prevents the infinite synchronous state loop bug ⬇️
+  const hasTriggeredAutoOpen = useRef(false);
+
+  useEffect(() => {
+    // Only open the popup if forced by registration AND we haven't opened it already on this mount
+    if (forceOpenActivation && !hasTriggeredAutoOpen.current) {
+      hasTriggeredAutoOpen.current = true; // Mark as triggered immediately
+      setIsActivationModalOpen(true);
+      if (onClearForceOpen) {
+        onClearForceOpen();
+      }
+    }
+  }, [forceOpenActivation, onClearForceOpen]);
 
   // Catch initialization timing delays smoothly
   if (!userProfile) {
@@ -17,13 +31,64 @@ export default function Dashboard() {
     );
   }
 
+  const isAccountVerified = userProfile && userProfile.isVerified === true;
+
   return (
     <div className="velora-canvas" style={{ padding: "30px 20px", display: "flex", flexDirection: "column", gap: "32px", alignItems: "center" }}>
       
+      {/* PERSISTENT ACTIVATION ALERT BANNER */}
+      {!isAccountVerified && (
+        <div 
+          className="neon-border-glow" 
+          style={{ 
+            background: "rgba(218, 165, 32, 0.1)", 
+            border: "1px solid var(--gold-accent, #daa520)", 
+            borderRadius: "12px", 
+            padding: "20px", 
+            width: "100%",
+            maxWidth: "1000px",
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "16px"
+          }}
+        >
+          <div style={{ flex: "1", minWidth: "280px" }}>
+            <h4 style={{ margin: 0, color: "var(--gold-accent, #daa520)", fontSize: "16px", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
+              ⚠️ ACTION REQUIRED: ACCOUNT UNVERIFIED
+            </h4>
+            <p style={{ margin: "6px 0 0 0", color: "var(--text-slate, #8b949e)", fontSize: "13px", lineHeight: "1.5" }}>
+              Your Available Balance wallet is locked. Verify your Velora account via the assigned merchant account to instantly unlock your payouts.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="premium-pulse-button"
+            onClick={() => setIsActivationModalOpen(true)}
+            style={{ 
+              padding: "12px 24px", 
+              borderRadius: "6px", 
+              background: "var(--gold-accent, #daa520)", 
+              border: "none", 
+              color: "#110922", 
+              fontWeight: "700", 
+              fontSize: "13px", 
+              cursor: "pointer",
+              whiteSpace: "nowrap"
+            }}
+          >
+            ACTIVATE ACCOUNT NOW
+          </button>
+        </div>
+      )}
+
       {/* Top Private Dashboard Management Nav */}
       <div style={{ width: "100%", maxWidth: "1000px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--bg-dark-card)", padding: "16px 24px", borderRadius: "12px" }} className="neon-border-glow">
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: userProfile.isActivated ? "#10B981" : "#F59E0B" }} />
+          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: isAccountVerified ? "#10B981" : "#F59E0B" }} />
           <span style={{ color: "var(--text-white)", fontWeight: "600", fontSize: "15px" }}>
             Welcome, {userProfile.fullName} ({userProfile.username})
           </span>
@@ -49,16 +114,16 @@ export default function Dashboard() {
         
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <button 
-            onClick={() => setIsModalMounted(true)}
+            onClick={() => setIsActivationModalOpen(true)}
             className="premium-pulse-button"
             style={{ padding: "16px 32px", borderRadius: "8px", fontSize: "15px" }}
           >
-            WITHDRAW BALANCE
+            ACTIVATE ACCOUNT
           </button>
         </div>
       </div>
 
-      {/* Internal Continuous Funnel Promotion Feed Container */}
+      {/* Funnel Feed Cards */}
       <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", textAlign: "center" }} className="neon-border-glow">
         <h4 style={{ color: "var(--text-white)", marginBottom: "12px", fontSize: "16px", fontWeight: "700" }}> Welcome to VELORA PLATFORM  💜</h4>
         <p style={{ color: "var(--text-slate)", fontSize: "14px", marginBottom: "20px", maxWidth: "600px", marginInline: "auto" }}>
@@ -67,7 +132,6 @@ export default function Dashboard() {
         <CTAButton />
       </div>
 
-      {/* Internal Continuous Funnel Promotion Feed Container */}
       <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", textAlign: "center" }} className="neon-border-glow">
         <h4 style={{ color: "var(--text-white)", marginBottom: "12px", fontSize: "16px", fontWeight: "700" }}> Accelerate Your Velora Commission Funnel</h4>
         <p style={{ color: "var(--text-slate)", fontSize: "14px", marginBottom: "20px", maxWidth: "600px", marginInline: "auto" }}>
@@ -76,8 +140,10 @@ export default function Dashboard() {
         <CTAButton />
       </div>
 
-      {/* Conditional Portal Modal Lock Gate */}
-      {isModalMounted && <ActivationModal onClose={() => setIsModalMounted(false)} />}
+      {isActivationModalOpen && (
+        <ActivationModal onClose={() => setIsActivationModalOpen(false)} />
+      )}
     </div>
-  );
+  ); 
 }
+

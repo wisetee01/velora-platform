@@ -3,11 +3,23 @@ import TestimonialPopup from "../components/TestimonialPopup";
 import PackageCard from "../components/PackageCard";
 
 export default function LandingPage({ onNavigate }) {
-  // Production marketing content strings
+ // Production marketing content strings mapping our imported variables
   const promotionalFliers = [
-    { title: "Post on WhatsApp Status (Earn Up to ₦125k Daily)", text: "What to do 👉Download the AI music videos on the platform. Action: Post them on your WhatsApp Status. Payment⚠️ : Get paid based on your views and consistency." },
-    { title: "Get Quick Business Loans", text: "What to do: Apply inside the app. Action: No heavy paper, no guarantor, no headache.  Payment⚠️ : Get fast cash credited to expand your business.  " },
-    { title: "Watch & Rate Videos (Earn ₦10k – ₦20k Daily)", text: "What to do: Watch one short AI video daily. Action: Just give it a star rating. Payment⚠️ : Make ₦10,000 to ₦20,000 every day. " },
+    { 
+      title: "Post on WhatsApp Status (Earn Up to ₦125k Daily)", 
+      text: "What to do 👉Download the AI music videos on the platform. Action: Post them on your WhatsApp Status. Payment⚠️ : Get paid based on your views and consistency.",
+      imageSrc: "/flyer-whatsapp.png" // ◄ Uses the compiled imported file asset
+    },
+    { 
+      title: "Get Quick Business Loans", 
+      text: "What to do: Apply inside the app. Action: No heavy paper, no guarantor, no headache.  Payment⚠️ : Get fast cash credited to expand your business.  ",
+      imageSrc: "/flyer-loan.png" // ◄ Uses the compiled imported file asset
+    },
+    { 
+      title: "Watch & Rate Videos (Earn ₦10k – ₦20k Daily)", 
+      text: "What to do: Watch one short AI video daily. Action: Just give it a star rating. Payment⚠️ : Make ₦10,000 to ₦20,000 every day. ",
+      imageSrc: "/flyer-video.png" // ◄ Uses the compiled imported file asset
+    },
   ];
 
   const platinumFeatures = ["Access to Platinum Dashboard", "₦31,500 Immediate Welcome Voucher", "Daily Affiliate Commision Access", "24/7 Premium Telegram Channel VIP Invite"];

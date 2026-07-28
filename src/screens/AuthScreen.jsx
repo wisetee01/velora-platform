@@ -8,7 +8,6 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // NEW STATES: Control password character visibility switches independently
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -35,18 +34,19 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
         const validationResult = validateRegistrationForm(formState);
         if (!validationResult.isValid) {
           setErrorMessage(validationResult.message);
-          setIsSubmitting(false); // FIXED: Turn off spinner
+          setIsSubmitting(false);
           return;
         }
         
-        // 1. Submit form data to the authentication backend handler
         await register(formState);
+
+        // Signal to the router to force the modal up instantly on login
+        onNavigate("DASHBOARD_WITH_ACTIVATION_FORCE");
 
       } else {
         await login(formState.email, formState.password);
       }
     } catch (err) {
-      // FIXED: Convert native Firebase errors into clean, readable warnings
       let customerFriendlyMessage = err.message;
       if (err.code === "auth/email-already-in-use") customerFriendlyMessage = "This email is already registered.";
       if (err.code === "auth/invalid-email") customerFriendlyMessage = "Invalid email formatting.";
@@ -54,14 +54,13 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
       if (err.code === "auth/operation-not-allowed") customerFriendlyMessage = "Email/Password sign-in is not enabled in Firebase Console.";
 
       setErrorMessage(customerFriendlyMessage);
-      setIsSubmitting(false); // FIXED: Turn off spinner immediately on error
+      setIsSubmitting(false);
     }
   };
 
-  // Reusable styling configurations for text fields and alignment layouts
   const inputStyle = {
     width: "100%",
-    padding: "12px 42px 12px 12px", // Padded right edge so long input values do not clip into toggle text
+    padding: "12px 42px 12px 12px",
     borderRadius: "8px",
     background: "var(--bg-deep-purple)",
     border: "1px solid var(--neon-violet)",

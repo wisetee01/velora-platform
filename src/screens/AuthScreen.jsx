@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { validateRegistrationForm } from "../utils/validators";
+import TestimonialPopup from "../components/TestimonialPopup";
 
 export default function AuthScreen({ onNavigate, preferredPlan }) {
   const { login, register } = useAuth();
@@ -152,7 +153,12 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? "👁️" : "🙈"}
+                {showPassword ? (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--gold-accent)" }}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+) : (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--gold-accent)" }}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
+)
+}
               </button>
             </div>
           </div>
@@ -199,6 +205,8 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
           </button>
         </form>
       </div>
+
+      <TestimonialPopup />
     </div>
   );
 }

@@ -3,18 +3,18 @@ import { useAuth } from "../context/AuthContext";
 import { formatToNaira } from "../utils/formatters";
 import ActivationModal from "../components/ActivationModal";
 import CTAButton from "../components/CTAButton";
+import TestimonialPopup from "../components/TestimonialPopup";
 
 export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
   const { userProfile, logout } = useAuth();
   const [isActivationModalOpen, setIsActivationModalOpen] = useState(false);
 
-  // ⬇️ BULLETPROOF STATE TRACKER: Prevents the infinite synchronous state loop bug ⬇️
+  // BULLETPROOF STATE TRACKER: Prevents the infinite synchronous state loop bug
   const hasTriggeredAutoOpen = useRef(false);
 
   useEffect(() => {
-    // Only open the popup if forced by registration AND we haven't opened it already on this mount
     if (forceOpenActivation && !hasTriggeredAutoOpen.current) {
-      hasTriggeredAutoOpen.current = true; // Mark as triggered immediately
+      hasTriggeredAutoOpen.current = true;
       setIsActivationModalOpen(true);
       if (onClearForceOpen) {
         onClearForceOpen();
@@ -60,7 +60,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
               ⚠️ ACTION REQUIRED: ACCOUNT UNVERIFIED
             </h4>
             <p style={{ margin: "6px 0 0 0", color: "var(--text-slate, #8b949e)", fontSize: "13px", lineHeight: "1.5" }}>
-              Your Available Balance wallet is locked. Verify your Velora account via the assigned merchant account to instantly unlock your payouts.
+              Your daily task wallet is locked. Deposit your verification fee to your assigned merchant account to instantly unlock your payouts.
             </p>
           </div>
 
@@ -123,27 +123,52 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
         </div>
       </div>
 
-      {/* Funnel Feed Cards */}
-      <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", textAlign: "center" }} className="neon-border-glow">
-        <h4 style={{ color: "var(--text-white)", marginBottom: "12px", fontSize: "16px", fontWeight: "700" }}> Welcome to VELORA PLATFORM  💜</h4>
-        <p style={{ color: "var(--text-slate)", fontSize: "14px", marginBottom: "20px", maxWidth: "600px", marginInline: "auto" }}>
-         Success doesn't come from waiting for the perfect moment,it comes from taking action today. Stay consistent, stay focused, and keep believing in your journey. Your next breakthrough could be one decision away.
+      {/* ⬇️ VISUAL FLYER CARD 1: WHATSAPP STATUS TASKS ⬇️ */}
+      <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
+        
+        {/* Flyer Image Container */}
+        <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <img 
+            src="/flyer-whatsapp.png" 
+            alt="WhatsApp Task Flyer" 
+            style={{ width: "100%", height: "100%", objectFit: "contain" }} 
+          />
+        </div>
+
+        <h4 style={{ color: "var(--text-white)", margin: 0, fontSize: "18px", fontWeight: "700" }}> Welcome to VELORA PLATFORM  💜</h4>
+        <p style={{ color: "var(--text-slate)", fontSize: "14px", margin: 0, maxWidth: "600px", textAlign: "center" }}>
+         Success doesn't come from waiting for the perfect moment, it comes from taking action today. Stay consistent, stay focused, and keep believing in your journey. Your next breakthrough could be one decision away.
         </p>
         <CTAButton />
       </div>
 
-      <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", textAlign: "center" }} className="neon-border-glow">
-        <h4 style={{ color: "var(--text-white)", marginBottom: "12px", fontSize: "16px", fontWeight: "700" }}> Accelerate Your Velora Commission Funnel</h4>
-        <p style={{ color: "var(--text-slate)", fontSize: "14px", marginBottom: "20px", maxWidth: "600px", marginInline: "auto" }}>
+      {/* ⬇️ VISUAL FLYER CARD 2: REVENUE FUNNEL TASKS ⬇️ */}
+      <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
+        
+        {/* Flyer Image Container */}
+        <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <img 
+            src="/flyer-loan.png" 
+            alt="Commission Funnel Flyer" 
+            style={{ width: "100%", height: "100%", objectFit: "contain" }} 
+          />
+        </div>
+
+        <h4 style={{ color: "var(--text-white)", margin: 0, fontSize: "18px", fontWeight: "700" }}> Accelerate Your Velora Commission Funnel</h4>
+        <p style={{ color: "var(--text-slate)", fontSize: "14px", margin: 0, maxWidth: "600px", textAlign: "center" }}>
           Gain complete community insights, premium copy templates, and daily execution advice inside the central hub. Unrestricted entry parameters apply.
         </p>
         <CTAButton />
       </div>
 
+      {/* SYSTEM POPUP OVERLAY ELEMENT */}
       {isActivationModalOpen && (
         <ActivationModal onClose={() => setIsActivationModalOpen(false)} />
       )}
+
+      <TestimonialPopup />
     </div>
   ); 
 }
+
 

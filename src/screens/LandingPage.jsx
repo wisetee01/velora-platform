@@ -3,36 +3,13 @@ import TestimonialPopup from "../components/TestimonialPopup";
 import PackageCard from "../components/PackageCard";
 
 export default function LandingPage({ onNavigate }) {
- // Production marketing content strings mapping our imported variables
-  const promotionalFliers = [
-    { 
-      title: "Post on WhatsApp Status (Earn Up to ₦125k Daily)", 
-      text: "What to do 👉Download the AI music videos on the platform. Action: Post them on your WhatsApp Status. Payment⚠️ : Get paid based on your views and consistency.",
-      imageSrc: "/flyer-whatsapp.png" // ◄ Uses the compiled imported file asset
-    },
-    { 
-      title: "Get Quick Business Loans", 
-      text: "What to do: Apply inside the app. Action: No heavy paper, no guarantor, no headache.  Payment⚠️ : Get fast cash credited to expand your business.  ",
-      imageSrc: "/flyer-loan.png" // ◄ Uses the compiled imported file asset
-    },
-    { 
-      title: "Watch & Rate Videos (Earn ₦10k – ₦20k Daily)", 
-      text: "What to do: Watch one short AI video daily. Action: Just give it a star rating. Payment⚠️ : Make ₦10,000 to ₦20,000 every day. ",
-      imageSrc: "/flyer-video.png" // ◄ Uses the compiled imported file asset
-    },
-  ];
-
   const platinumFeatures = ["Access to Platinum Dashboard", "₦31,500 Immediate Welcome Voucher", "Daily Affiliate Commision Access", "24/7 Premium Telegram Channel VIP Invite"];
   const goldFeatures = ["Access to Gold Dashboard", "₦50,750 High-Tier Welcome Voucher", "Priority Fast-Track Withdrawals", "Airtight Step-by-Step Mentorship System Link"];
 
   return (
     <div className="velora-canvas" style={{ padding: "40px 20px", display: "flex", flexDirection: "column", gap: "60px", alignItems: "center" }}>
       {/* Top Section Header Panel */}
-       {/* =========================================================================
-          UPDATED OPTIMIZED HEADER: Strong Semantic Brand Signals for Google Sitelinks
-          ========================================================================= */}
       <header style={{ width: "100%", maxWidth: "1200px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        {/* Font weight increased to 900 for explicit search-engine brand anchoring */}
         <h1 className="gold-text-accent" style={{ fontSize: "28px", fontWeight: "900", letterSpacing: "1.5px", margin: 0 }}>
           VELORA
         </h1>
@@ -44,37 +21,92 @@ export default function LandingPage({ onNavigate }) {
           >
             Login / Register
           </button>
-          {/* Component kept clean to prevent nested tag crashes while allowing font size mapping */}
           <CTAButton styleOverrides={{ padding: "10px 20px", fontSize: "11px" }} />
         </nav>
       </header>
-      {/* ========================================================================= */}
 
       {/* Hero Visual Section Container */}
+           {/* Hero Visual Section Container with Side-by-Side Flyer Previews */}
       <section style={{ textAlign: "center", maxWidth: "800px", marginTop: "40px" }}>
+        
+        {/* ⬇️ FLEX WRAPPER CONTAINER: Forces images to sit perfectly beside each other ⬇️ */}
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "16px", marginBottom: "32px", width: "100%", flexWrap: "wrap" }}>
+          
+          {/* IMAGE 1: Left Card */}
+          <div style={{ width: "100%", maxWidth: "380px", height: "220px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <img 
+              src="/veloraa.png" 
+              alt="velora Flyer" 
+              style={{ width: "100%", height: "100%", objectFit: "contain" }} 
+            />
+          </div>
+
+          {/* IMAGE 2: Right Card */}
+          <div style={{ width: "100%", maxWidth: "380px", height: "220px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <img 
+              src="/slot.png" 
+              alt="velora Slot Flyer" 
+              style={{ width: "100%", height: "100%", objectFit: "contain" }} 
+            />
+          </div>
+
+        </div>
+        {/* ⬆️ FLEX WRAPPER END ⬆️ */}
+
         <h2 style={{ fontSize: "42px", fontWeight: "800", color: "var(--text-white)", marginBottom: "20px", lineHeight: "1.2" }}>
-     <span className="gold-text-accent">Welcome to VELORA—the ultimate platform where your opinion, your phone, and your WhatsApp Status become an unstoppable money-making machine.</span>
+          <span className="gold-text-accent">Welcome to VELORA—the ultimate platform where your opinion, your phone, and your WhatsApp Status become an unstoppable money-making machine.</span>
         </h2>
         <p style={{ color: "var(--text-slate)", fontSize: "16px", lineHeight: "1.6", marginBottom: "32px" }}>
-         Why Global Earners Are Rushing to VELORA <br />
-
-Earn in Dollars: Get paid in USD, cash out straight to your Nigerian bank account. <br />
-
-Instant Welcome Bonus: Get ₦31,500 to ₦50,750 back to WITHDRAW immediately you register. <br />
-
-Urgent Loans: Borrow money to start or grow your business with zero collateral and no stress. 
+          Why Global Earners Are Rushing to VELORA <br />
+          Earn in Dollars: Get paid in USD, cash out straight to your Nigerian bank account. <br />
+          Instant Welcome Bonus: Get ₦31,500 to ₦50,750 back to WITHDRAW immediately you register. <br />
+          Urgent Loans: Borrow money to start or grow your business with zero collateral and no stress. 
         </p>
         <CTAButton styleOverrides={{ fontSize: "16px", padding: "16px 36px" }} />
       </section>
 
-      {/* Dynamic Flier/Feature Displays */}
-      <section style={{ width: "100%", maxWidth: "1000px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
-        {promotionalFliers.map((flier, idx) => (
-          <div key={idx} className="neon-border-glow" style={{ padding: "28px", borderRadius: "12px", background: "var(--bg-dark-card)" }}>
-            <h4 className="gold-text-accent" style={{ fontSize: "18px", marginBottom: "12px", fontWeight: "700" }}>{flier.title}</h4>
-            <p style={{ color: "var(--text-slate)", fontSize: "14px", lineHeight: "1.6" }}>{flier.text}</p>
+      {/* ⬇️ HARDCODED FLAT CARD SECTION: No more array mapping or loops ⬇️ */}
+      <section style={{ width: "100%", maxWidth: "1000px", display: "flex", flexDirection: "column", gap: "32px", alignItems: "center" }}>
+        
+        {/* VISUAL CARD 1: WHATSAPP */}
+        <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
+          <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <img 
+              src="/flyer-whatsapp.png" 
+              alt="WhatsApp Task Flyer" 
+              style={{ width: "100%", height: "100%", objectFit: "contain" }} 
+            />
           </div>
-        ))}
+          <h4 className="gold-text-accent" style={{ fontSize: "18px", fontWeight: "700", margin: 0, textAlign: "center" }}>Post on WhatsApp Status (Earn Up to ₦125k Daily)</h4>
+          <p style={{ color: "var(--text-slate)", fontSize: "14px", lineHeight: "1.6", margin: 0, maxWidth: "600px", textAlign: "center" }}>What to do Download the AI music videos on the platform. Action: Post them on your WhatsApp Status. Payment : Get paid based on your views and consistency.</p>
+        </div>
+
+        {/* VISUAL CARD 2: LOANS */}
+        <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
+          <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <img 
+              src="/flyer-loann.png" 
+              alt="Business Loan Flyer" 
+              style={{ width: "100%", height: "100%", objectFit: "contain" }} 
+            />
+          </div>
+          <h4 className="gold-text-accent" style={{ fontSize: "18px", fontWeight: "700", margin: 0, textAlign: "center" }}>Get Quick Business Loans</h4>
+          <p style={{ color: "var(--text-slate)", fontSize: "14px", lineHeight: "1.6", margin: 0, maxWidth: "600px", textAlign: "center" }}>What to do: Apply inside the app. Action: No heavy paper, no guarantor, no headache.  Payment : Get fast cash credited to expand your business.</p>
+        </div>
+
+        {/* VISUAL CARD 3: WATCH VIDEOS */}
+        <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
+          <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <img 
+              src="/flyer-video.png" 
+              alt="Video Rating Flyer" 
+              style={{ width: "100%", height: "100%", objectFit: "contain" }} 
+            />
+          </div>
+          <h4 className="gold-text-accent" style={{ fontSize: "18px", fontWeight: "700", margin: 0, textAlign: "center" }}>Watch & Rate Videos (Earn ₦10k – ₦20k Daily)</h4>
+          <p style={{ color: "var(--text-slate)", fontSize: "14px", lineHeight: "1.6", margin: 0, maxWidth: "600px", textAlign: "center" }}>What to do: Watch one short AI video daily. Action: Just give it a star rating. Payment : Make ₦10,000 to ₦20,000 every day.</p>
+        </div>
+
       </section>
 
       {/* Product Packaging Price Matrix Grid */}
@@ -106,3 +138,4 @@ Urgent Loans: Borrow money to start or grow your business with zero collateral a
     </div>
   );
 }
+

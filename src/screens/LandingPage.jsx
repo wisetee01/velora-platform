@@ -41,14 +41,7 @@ export default function LandingPage({ onNavigate }) {
             />
           </div>
 
-          {/* IMAGE 2: Right Card */}
-          <div style={{ width: "100%", maxWidth: "380px", height: "220px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <img 
-              src="/slot.png" 
-              alt="velora Slot Flyer" 
-              style={{ width: "100%", height: "100%", objectFit: "contain" }} 
-            />
-          </div>
+         
 
         </div>
         {/* ⬆️ FLEX WRAPPER END ⬆️ */}
@@ -84,7 +77,7 @@ export default function LandingPage({ onNavigate }) {
         </div>
 
         {/* VISUAL CARD 2: LOANS */}
-        <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
+     <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
           <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <img 
               src="/flyer-loann.png" 

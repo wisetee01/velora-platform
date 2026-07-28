@@ -54,7 +54,9 @@ export default function LandingPage({ onNavigate }) {
         {/* ⬆️ FLEX WRAPPER END ⬆️ */}
 
         <h2 style={{ fontSize: "42px", fontWeight: "800", color: "var(--text-white)", marginBottom: "20px", lineHeight: "1.2" }}>
-          <span className="gold-text-accent">Welcome to VELORA—the ultimate platform where your opinion, your phone, and your WhatsApp Status become an unstoppable money-making machine.</span>
+          <span className="gold-text-accent">
+            Earn in Dollars, Withdraw in Naira
+          </span>
         </h2>
         <p style={{ color: "var(--text-slate)", fontSize: "16px", lineHeight: "1.6", marginBottom: "32px" }}>
           Why Global Earners Are Rushing to VELORA <br />

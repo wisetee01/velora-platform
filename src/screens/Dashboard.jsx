@@ -6,10 +6,8 @@ import CTAButton from "../components/CTAButton";
 import TestimonialPopup from "../components/TestimonialPopup";
 
 export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
-  const { userProfile, logout, isLoading } = useAuth();
+  const { userProfile, logout } = useAuth();
   const [isActivationModalOpen, setIsActivationModalOpen] = useState(false);
-
-  // BULLETPROOF STATE TRACKER: Prevents the infinite synchronous state loop bug
   const hasTriggeredAutoOpen = useRef(false);
 
   useEffect(() => {
@@ -22,16 +20,16 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     }
   }, [forceOpenActivation, onClearForceOpen]);
 
-  // ⬇️ REFRESH SHIELD: Holds back compilation rules safely until context profiles hydrate natively ⬇️
-  if (isLoading || !userProfile) {
-    return (
-      <div className="velora-canvas" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0b0518" }}>
-        <div className="velora-spinner" style={{ width: "40px", height: "40px", border: "4px solid rgba(139, 92, 246, 0.1)", borderTopColor: "var(--gold-accent)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
-      </div>
-    );
-  }
+  // Fallback profile object if user details are resolving over slow mobile data networks
+  const safeProfile = userProfile || {
+    fullName: "User",
+    username: "Earner",
+    balance: 0,
+    packagePlan: "Platinum",
+    isVerified: false
+  };
 
-  const isAccountVerified = userProfile && userProfile.isVerified === true;
+  const isAccountVerified = safeProfile.isVerified === true;
 
   return (
     <div className="velora-canvas" style={{ padding: "30px 20px", display: "flex", flexDirection: "column", gap: "32px", alignItems: "center" }}>
@@ -90,7 +88,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: isAccountVerified ? "#10B981" : "#F59E0B" }} />
           <span style={{ color: "var(--text-white)", fontWeight: "600", fontSize: "15px" }}>
-            Welcome, {userProfile.fullName} ({userProfile.username})
+            Welcome, {safeProfile.fullName} ({safeProfile.username})
           </span>
         </div>
         <button 
@@ -105,10 +103,10 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
       <div className="gold-border-frame" style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "16px", padding: "40px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
         <div>
           <p style={{ textTransform: "uppercase", fontSize: "12px", tracking: "1px", color: "var(--text-slate)", opacity: 0.8, marginBottom: "8px" }}>
-            Available Withdrawal Balance ({userProfile.packagePlan || "Platinum"} Package)
+            Available Withdrawal Balance ({safeProfile.packagePlan} Package)
           </p>
           <h3 style={{ fontSize: "38px", fontWeight: "800", color: "var(--text-white)" }}>
-            {formatToNaira(userProfile.balance || 0)}
+            {formatToNaira(safeProfile.balance || 0)}
           </h3>
         </div>
         
@@ -123,14 +121,10 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
         </div>
       </div>
 
-      {/* ⬇️ VISUAL FLYER CARD 1: WHATSAPP STATUS TASKS ⬇️ */}
+      {/* VISUAL FLYER CARD 1 */}
       <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
         <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <img 
-            src="/flyer-whatsapp.png" 
-            alt="WhatsApp Task Flyer" 
-            style={{ width: "100%", height: "100%", objectFit: "contain" }} 
-          />
+          <img src="/flyer-whatsapp.png" alt="WhatsApp Task Flyer" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
         </div>
         <h4 style={{ color: "var(--text-white)", margin: 0, fontSize: "18px", fontWeight: "700" }}> Welcome to VELORA PLATFORM  💜</h4>
         <p style={{ color: "var(--text-slate)", fontSize: "14px", margin: 0, maxWidth: "600px", textAlign: "center" }}>
@@ -139,14 +133,10 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
         <CTAButton />
       </div>
 
-      {/* ⬇️ VISUAL FLYER CARD 2: REVENUE FUNNEL TASKS ⬇️ */}
+      {/* VISUAL FLYER CARD 2 */}
       <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
         <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <img 
-            src="/flyer-loan.png" 
-            alt="Commission Funnel Flyer" 
-            style={{ width: "100%", height: "100%", objectFit: "contain" }} 
-          />
+          <img src="/flyer-loan.png" alt="Commission Funnel Flyer" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
         </div>
         <h4 style={{ color: "var(--text-white)", margin: 0, fontSize: "18px", fontWeight: "700" }}> Accelerate Your Velora Commission Funnel</h4>
         <p style={{ color: "var(--text-slate)", fontSize: "14px", margin: 0, maxWidth: "600px", textAlign: "center" }}>
@@ -155,7 +145,6 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
         <CTAButton />
       </div>
 
-      {/* SYSTEM POPUP OVERLAY ELEMENT */}
       {isActivationModalOpen && (
         <ActivationModal onClose={() => setIsActivationModalOpen(false)} />
       )}
@@ -164,6 +153,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     </div>
   ); 
 }
+
 
 
 

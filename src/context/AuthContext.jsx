@@ -11,22 +11,19 @@ import { createUserProfileRecord } from "../api/users";
 
 const AuthContext = createContext(null);
 
-/**
- * Global Architecture State Wrapper tracking active credentials and profile parameters.
- */
 export const AuthProvider = ({ children }) => {
-  // Read session markers to prevent immediate loading screens during initial hydration frames
   const [currentUser, setCurrentUser] = useState(() => auth.currentUser);
+  
+  // Instant synchronous memory fetch: Bypasses cold Firestore network connection lag
   const [userProfile, setUserProfile] = useState(() => {
-    const cachedProfile = sessionStorage.getItem("velora_profile_cache");
-    return cachedProfile ? JSON.parse(cachedProfile) : null;
+    const saved = localStorage.getItem("velora_profile_sync");
+    return saved ? JSON.parse(saved) : null;
   });
-  const [isLoading, setIsLoading] = useState(true);
+  
+  const [isLoading, setIsLoading] = useState(() => {
+    return !localStorage.getItem("velora_profile_sync");
+  });
 
-  /**
-   * Orchestrates multi-layer account registration sequencing.
-   * Leverages Auth SDK creation then immediately branches off to seed the initial data ledger.
-   */
   const registerUserAccount = async (formPayload) => {
     setIsLoading(true);
     try {
@@ -35,8 +32,6 @@ export const AuthProvider = ({ children }) => {
         formPayload.email.trim(), 
         formPayload.password
       );
-      
-      // Hand off authenticated state markers to Layer 2 for secure record setup
       await createUserProfileRecord(userCredential.user.uid, formPayload);
       return userCredential.user;
     } catch (error) {
@@ -45,28 +40,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  /**
-   * Executes simple state-transition logins matching email and password credentials.
-   */
   const loginUserAccount = async (email, password) => {
     setIsLoading(true);
     return signInWithEmailAndPassword(auth, email.trim(), password);
   };
 
-  /**
-   * Erases all operational memory contexts upon profile exits.
-   */
   const logoutUserAccount = async () => {
     setIsLoading(true);
-    sessionStorage.removeItem("velora_profile_cache");
+    localStorage.removeItem("velora_profile_sync");
     setUserProfile(null);
+    setCurrentUser(null);
     return signOut(auth);
   };
 
-  /**
-   * Listens directly to real-time auth changes.
-   * Seamlessly spins up a live tracking pipeline to watch database activations on the free tier.
-   */
   useEffect(() => {
     let unsubscribeFromFirestoreSnapshot = null;
 
@@ -74,36 +60,31 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(user);
 
       if (user) {
-        // Establishes a real-time reactive pipeline to capture manual admin upgrades instantly
         unsubscribeFromFirestoreSnapshot = onSnapshot(
           doc(db, "users", user.uid),
           (documentSnapshot) => {
             if (documentSnapshot.exists()) {
               const profileData = documentSnapshot.data();
               setUserProfile(profileData);
-              // Safe-cache profile memory string to bypass network timing lag on instant reloads
-              sessionStorage.setItem("velora_profile_cache", JSON.stringify(profileData));
+              localStorage.setItem("velora_profile_sync", JSON.stringify(profileData));
             }
-            // Explicitly kill loading state after data payload structure resolves safely
-            setIsLoading(false);
+            setIsLoading(false); // Kill loader
           },
           (error) => {
-            console.error("Firestore localized tracking error:", error);
-            setIsLoading(false);
+            console.error("Firestore tracking error:", error);
+            setIsLoading(false); // Kill loader immediately on error so app never hangs
           }
         );
       } else {
-        // Tear down any leftover active listener blocks on logout
         if (unsubscribeFromFirestoreSnapshot) {
           unsubscribeFromFirestoreSnapshot();
         }
-        sessionStorage.removeItem("velora_profile_cache");
+        localStorage.removeItem("velora_profile_sync");
         setUserProfile(null);
         setIsLoading(false);
       }
     });
 
-    // Cleanup hook intervals and subscription pipelines accurately upon mounting structural resets
     return () => {
       unsubscribeFromAuthObserver();
       if (unsubscribeFromFirestoreSnapshot) {
@@ -128,9 +109,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-/**
- * Isolated Consumer Engine that elements use to safely ingest profile values.
- */
 export const useAuth = () => {
   const customContextInstance = useContext(AuthContext);
   if (!customContextInstance) {

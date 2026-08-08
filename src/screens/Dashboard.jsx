@@ -10,6 +10,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
   const [isActivationModalOpen, setIsActivationModalOpen] = useState(false);
   const hasTriggeredAutoOpen = useRef(false);
 
+  // Automatically pop the modal open upon fresh registration redirection overrides
   useEffect(() => {
     if (forceOpenActivation && !hasTriggeredAutoOpen.current) {
       hasTriggeredAutoOpen.current = true;
@@ -111,6 +112,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
         </div>
         
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          {/* ⬇️ ALIGNED STATE TRIGGER: Successfully calls our active variable flag hook ⬇️ */}
           <button 
             onClick={() => setIsActivationModalOpen(true)}
             className="premium-pulse-button"
@@ -145,6 +147,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
         <CTAButton />
       </div>
 
+      {/* SYSTEM POPUP OVERLAY ELEMENT */}
       {isActivationModalOpen && (
         <ActivationModal onClose={() => setIsActivationModalOpen(false)} />
       )}
@@ -153,6 +156,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     </div>
   ); 
 }
+
 
 
 

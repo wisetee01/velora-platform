@@ -15,8 +15,12 @@ const AuthContext = createContext(null);
  * Global Architecture State Wrapper tracking active credentials and profile parameters.
  */
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
+  // Read session markers to prevent immediate loading screens during initial hydration frames
+  const [currentUser, setCurrentUser] = useState(() => auth.currentUser);
+  const [userProfile, setUserProfile] = useState(() => {
+    const cachedProfile = sessionStorage.getItem("velora_profile_cache");
+    return cachedProfile ? JSON.parse(cachedProfile) : null;
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   /**
@@ -54,6 +58,7 @@ export const AuthProvider = ({ children }) => {
    */
   const logoutUserAccount = async () => {
     setIsLoading(true);
+    sessionStorage.removeItem("velora_profile_cache");
     setUserProfile(null);
     return signOut(auth);
   };
@@ -74,8 +79,12 @@ export const AuthProvider = ({ children }) => {
           doc(db, "users", user.uid),
           (documentSnapshot) => {
             if (documentSnapshot.exists()) {
-              setUserProfile(documentSnapshot.data());
+              const profileData = documentSnapshot.data();
+              setUserProfile(profileData);
+              // Safe-cache profile memory string to bypass network timing lag on instant reloads
+              sessionStorage.setItem("velora_profile_cache", JSON.stringify(profileData));
             }
+            // Explicitly kill loading state after data payload structure resolves safely
             setIsLoading(false);
           },
           (error) => {
@@ -88,6 +97,7 @@ export const AuthProvider = ({ children }) => {
         if (unsubscribeFromFirestoreSnapshot) {
           unsubscribeFromFirestoreSnapshot();
         }
+        sessionStorage.removeItem("velora_profile_cache");
         setUserProfile(null);
         setIsLoading(false);
       }

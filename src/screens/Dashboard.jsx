@@ -6,7 +6,7 @@ import CTAButton from "../components/CTAButton";
 import TestimonialPopup from "../components/TestimonialPopup";
 
 export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
-  const { userProfile, logout } = useAuth();
+  const { userProfile, logout, isLoading } = useAuth();
   const [isActivationModalOpen, setIsActivationModalOpen] = useState(false);
 
   // BULLETPROOF STATE TRACKER: Prevents the infinite synchronous state loop bug
@@ -22,11 +22,11 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     }
   }, [forceOpenActivation, onClearForceOpen]);
 
-  // Catch initialization timing delays smoothly
-  if (!userProfile) {
+  // ⬇️ REFRESH SHIELD: Holds back compilation rules safely until context profiles hydrate natively ⬇️
+  if (isLoading || !userProfile) {
     return (
-      <div className="velora-canvas" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <div className="velora-spinner" />
+      <div className="velora-canvas" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0b0518" }}>
+        <div className="velora-spinner" style={{ width: "40px", height: "40px", border: "4px solid rgba(139, 92, 246, 0.1)", borderTopColor: "var(--gold-accent)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
       </div>
     );
   }
@@ -105,10 +105,10 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
       <div className="gold-border-frame" style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "16px", padding: "40px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
         <div>
           <p style={{ textTransform: "uppercase", fontSize: "12px", tracking: "1px", color: "var(--text-slate)", opacity: 0.8, marginBottom: "8px" }}>
-            Available Withdrawal Balance ({userProfile.packagePlan} Package)
+            Available Withdrawal Balance ({userProfile.packagePlan || "Platinum"} Package)
           </p>
           <h3 style={{ fontSize: "38px", fontWeight: "800", color: "var(--text-white)" }}>
-            {formatToNaira(userProfile.balance)}
+            {formatToNaira(userProfile.balance || 0)}
           </h3>
         </div>
         
@@ -125,8 +125,6 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
 
       {/* ⬇️ VISUAL FLYER CARD 1: WHATSAPP STATUS TASKS ⬇️ */}
       <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
-        
-        {/* Flyer Image Container */}
         <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <img 
             src="/flyer-whatsapp.png" 
@@ -134,7 +132,6 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
             style={{ width: "100%", height: "100%", objectFit: "contain" }} 
           />
         </div>
-
         <h4 style={{ color: "var(--text-white)", margin: 0, fontSize: "18px", fontWeight: "700" }}> Welcome to VELORA PLATFORM  💜</h4>
         <p style={{ color: "var(--text-slate)", fontSize: "14px", margin: 0, maxWidth: "600px", textAlign: "center" }}>
          Success doesn't come from waiting for the perfect moment, it comes from taking action today. Stay consistent, stay focused, and keep believing in your journey. Your next breakthrough could be one decision away.
@@ -144,8 +141,6 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
 
       {/* ⬇️ VISUAL FLYER CARD 2: REVENUE FUNNEL TASKS ⬇️ */}
       <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
-        
-        {/* Flyer Image Container */}
         <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <img 
             src="/flyer-loan.png" 
@@ -153,7 +148,6 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
             style={{ width: "100%", height: "100%", objectFit: "contain" }} 
           />
         </div>
-
         <h4 style={{ color: "var(--text-white)", margin: 0, fontSize: "18px", fontWeight: "700" }}> Accelerate Your Velora Commission Funnel</h4>
         <p style={{ color: "var(--text-slate)", fontSize: "14px", margin: 0, maxWidth: "600px", textAlign: "center" }}>
           Gain complete community insights, premium copy templates, and daily execution advice inside the central hub. Unrestricted entry parameters apply.
@@ -170,5 +164,6 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     </div>
   ); 
 }
+
 
 

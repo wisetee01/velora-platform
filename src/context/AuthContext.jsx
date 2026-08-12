@@ -37,10 +37,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
       
-      // Fetch profile snapshot instantly on login event to kill loading screens safely
+      // ⬇️ FIXED: Removed the broken .snapshot typo completely ⬇️
       const profileSnapshot = await getDoc(doc(db, "users", userCredential.user.uid));
       if (profileSnapshot.exists()) {
-        setUserProfile(profileSnapshot.snapshot.data());
+        setUserProfile(profileSnapshot.data());
       }
       return userCredential;
     } catch (error) {
@@ -117,6 +117,7 @@ export const useAuth = () => {
   }
   return customContextInstance;
 };
+
 
 
 

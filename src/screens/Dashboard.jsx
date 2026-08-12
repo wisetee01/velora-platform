@@ -21,16 +21,8 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     }
   }, [forceOpenActivation, onClearForceOpen]);
 
-  // Fallback profile object if user details are resolving over slow mobile data networks
-  const safeProfile = userProfile || {
-    fullName: "User",
-    username: "Earner",
-    balance: 0,
-    packagePlan: "Platinum",
-    isVerified: false
-  };
-
-  const isAccountVerified = safeProfile.isVerified === true;
+  // Read data values directly from your real database profile profile block
+  const isAccountVerified = userProfile && userProfile.isVerified === true;
 
   return (
     <div className="velora-canvas" style={{ padding: "30px 20px", display: "flex", flexDirection: "column", gap: "32px", alignItems: "center" }}>
@@ -89,7 +81,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: isAccountVerified ? "#10B981" : "#F59E0B" }} />
           <span style={{ color: "var(--text-white)", fontWeight: "600", fontSize: "15px" }}>
-            Welcome, {safeProfile.fullName} ({safeProfile.username})
+            Welcome, {userProfile?.fullName || "User"} ({userProfile?.username || "Earner"})
           </span>
         </div>
         <button 
@@ -104,15 +96,14 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
       <div className="gold-border-frame" style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "16px", padding: "40px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
         <div>
           <p style={{ textTransform: "uppercase", fontSize: "12px", tracking: "1px", color: "var(--text-slate)", opacity: 0.8, marginBottom: "8px" }}>
-            Available Withdrawal Balance ({safeProfile.packagePlan} Package)
+            Available Withdrawal Balance ({userProfile?.packagePlan || "Platinum"} Package)
           </p>
           <h3 style={{ fontSize: "38px", fontWeight: "800", color: "var(--text-white)" }}>
-            {formatToNaira(safeProfile.balance || 0)}
+            {formatToNaira(userProfile?.balance || 0)}
           </h3>
         </div>
         
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {/* ⬇️ ALIGNED STATE TRIGGER: Successfully calls our active variable flag hook ⬇️ */}
           <button 
             onClick={() => setIsActivationModalOpen(true)}
             className="premium-pulse-button"
@@ -147,7 +138,6 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
         <CTAButton />
       </div>
 
-      {/* SYSTEM POPUP OVERLAY ELEMENT */}
       {isActivationModalOpen && (
         <ActivationModal onClose={() => setIsActivationModalOpen(false)} />
       )}
@@ -156,6 +146,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     </div>
   ); 
 }
+
 
 
 

@@ -5,7 +5,7 @@ import {
   signOut, 
   onAuthStateChanged 
 } from "firebase/auth";
-import { doc, onSnapshot, getDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { createUserProfileRecord } from "../api/users";
 
@@ -35,14 +35,7 @@ export const AuthProvider = ({ children }) => {
   const loginUserAccount = async (email, password) => {
     setIsLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
-      
-      // ⬇️ FIXED: Removed the broken .snapshot typo completely ⬇️
-      const profileSnapshot = await getDoc(doc(db, "users", userCredential.user.uid));
-      if (profileSnapshot.exists()) {
-        setUserProfile(profileSnapshot.data());
-      }
-      return userCredential;
+      return await signInWithEmailAndPassword(auth, email.trim(), password);
     } catch (error) {
       setIsLoading(false);
       throw error;
@@ -57,32 +50,36 @@ export const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
+  // Pure Native Live-Sync Database Observer
   useEffect(() => {
     let unsubscribeFromFirestoreSnapshot = null;
 
     const unsubscribeFromAuthObserver = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
 
+      // Tear down any active snapshot listeners left over from previous users
+      if (unsubscribeFromFirestoreSnapshot) {
+        unsubscribeFromFirestoreSnapshot();
+      }
+
       if (user) {
+        // Pure native listener path: Handles reloads and log-ins instantly in one stream
         unsubscribeFromFirestoreSnapshot = onSnapshot(
           doc(db, "users", user.uid),
           (documentSnapshot) => {
             if (documentSnapshot.exists()) {
               setUserProfile(documentSnapshot.data());
             }
-            setIsLoading(false); // Turn off the spinner immediately
+            setIsLoading(false); // ◄ Turn off yellow spinner instantly when data lands
           },
           (error) => {
-            console.error("Firestore connection lag:", error);
-            setIsLoading(false); // Force-kill spinner on failure
+            console.error("Firestore real-time connection error:", error);
+            setIsLoading(false); // ◄ Safety catch: Turn off spinner immediately if network/rules block read
           }
         );
       } else {
-        if (unsubscribeFromFirestoreSnapshot) {
-          unsubscribeFromFirestoreSnapshot();
-        }
         setUserProfile(null);
-        setIsLoading(false); // Turn off spinner if logged out
+        setIsLoading(false); // ◄ Turn off spinner if user is completely logged out
       }
     });
 
@@ -117,6 +114,7 @@ export const useAuth = () => {
   }
   return customContextInstance;
 };
+
 
 
 

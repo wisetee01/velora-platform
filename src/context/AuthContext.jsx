@@ -1,6 +1,4 @@
-
-
-import { createContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -11,7 +9,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { createUserProfileRecord } from "../api/users";
 
-export const AuthContext = createContext(null);
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -71,18 +69,18 @@ export const AuthProvider = ({ children }) => {
             if (documentSnapshot.exists()) {
               setUserProfile(documentSnapshot.data());
             } else {
-              setUserProfile(null); // No placeholders, just null if the data hasn't arrived yet
+              setUserProfile(null); // Pure database state lookup
             }
             setIsLoading(false); // ◄ ALWAYS kills the yellow spinner instantly here
           },
           (error) => {
             console.error("Firestore real-time connection error:", error);
-            setIsLoading(false); // ◄ Safety catch: Turn off spinner if network blocks read
+            setIsLoading(false); // Safety catch
           }
         );
       } else {
         setUserProfile(null);
-        setIsLoading(false); // ◄ Turn off spinner if user is completely logged out
+        setIsLoading(false); 
       }
     });
 
@@ -109,6 +107,16 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+// ⬇️ RESTORED INTERNAL EXPORT: Instantly clears the Vercel build failures across all screens ⬇️
+export const useAuth = () => {
+  const customContextInstance = useContext(AuthContext);
+  if (!customContextInstance) {
+    throw new Error("Architecture Violation: useAuth must be consumed inside a declared AuthProvider.");
+  }
+  return customContextInstance;
+};
+
 
 
 

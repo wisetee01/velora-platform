@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useEffect } from "react";
 import { 
   createUserWithEmailAndPassword, 
@@ -14,15 +15,12 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => auth.currentUser);
   
-  // Instant synchronous memory fetch: Bypasses cold Firestore network connection lag
   const [userProfile, setUserProfile] = useState(() => {
     const saved = localStorage.getItem("velora_profile_sync");
     return saved ? JSON.parse(saved) : null;
   });
   
-  const [isLoading, setIsLoading] = useState(() => {
-    return !localStorage.getItem("velora_profile_sync");
-  });
+  const [isLoading, setIsLoading] = useState(true);
 
   const registerUserAccount = async (formPayload) => {
     setIsLoading(true);
@@ -42,6 +40,8 @@ export const AuthProvider = ({ children }) => {
 
   const loginUserAccount = async (email, password) => {
     setIsLoading(true);
+    localStorage.removeItem("velora_profile_sync"); // Clear stale caches on fresh login attempts
+    setUserProfile(null);
     return signInWithEmailAndPassword(auth, email.trim(), password);
   };
 
@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("velora_profile_sync");
     setUserProfile(null);
     setCurrentUser(null);
+    setIsLoading(false);
     return signOut(auth);
   };
 
@@ -68,11 +69,12 @@ export const AuthProvider = ({ children }) => {
               setUserProfile(profileData);
               localStorage.setItem("velora_profile_sync", JSON.stringify(profileData));
             }
-            setIsLoading(false); // Kill loader
+            // ◄ FIXED: Only turn off the loading spinner AFTER data is completely ready
+            setIsLoading(false); 
           },
           (error) => {
             console.error("Firestore tracking error:", error);
-            setIsLoading(false); // Kill loader immediately on error so app never hangs
+            setIsLoading(false);
           }
         );
       } else {
@@ -116,3 +118,4 @@ export const useAuth = () => {
   }
   return customContextInstance;
 };
+

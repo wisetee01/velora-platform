@@ -6,7 +6,7 @@ import CTAButton from "../components/CTAButton";
 import TestimonialPopup from "../components/TestimonialPopup";
 
 export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
-  const { userProfile, logout } = useAuth();
+  const { userProfile, logout, isLoading } = useAuth();
   const [isActivationModalOpen, setIsActivationModalOpen] = useState(false);
   const hasTriggeredAutoOpen = useRef(false);
 
@@ -21,8 +21,17 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     }
   }, [forceOpenActivation, onClearForceOpen]);
 
-  // Read data values directly from your real database profile profile block
-  const isAccountVerified = userProfile && userProfile.isVerified === true;
+  // ⬇️ RIGID SAFETY SHIELD: If data is loading or missing on fresh login, hold view cleanly ⬇️
+  if (isLoading || !userProfile) {
+    return (
+      <div className="velora-canvas" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0b0518" }}>
+        <div className="velora-spinner" style={{ width: "40px", height: "40px", border: "4px solid rgba(139, 92, 246, 0.1)", borderTopColor: "var(--gold-accent, #daa520)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+      </div>
+    );
+  }
+
+  // Read data values directly from your real database profile block
+  const isAccountVerified = userProfile.isVerified === true;
 
   return (
     <div className="velora-canvas" style={{ padding: "30px 20px", display: "flex", flexDirection: "column", gap: "32px", alignItems: "center" }}>
@@ -81,7 +90,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: isAccountVerified ? "#10B981" : "#F59E0B" }} />
           <span style={{ color: "var(--text-white)", fontWeight: "600", fontSize: "15px" }}>
-            Welcome, {userProfile?.fullName || "User"} ({userProfile?.username || "Earner"})
+            Welcome, {userProfile.fullName} ({userProfile.username})
           </span>
         </div>
         <button 
@@ -96,10 +105,10 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
       <div className="gold-border-frame" style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "16px", padding: "40px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
         <div>
           <p style={{ textTransform: "uppercase", fontSize: "12px", tracking: "1px", color: "var(--text-slate)", opacity: 0.8, marginBottom: "8px" }}>
-            Available Withdrawal Balance ({userProfile?.packagePlan || "Platinum"} Package)
+            Available Withdrawal Balance ({userProfile.packagePlan || "Platinum"} Package)
           </p>
           <h3 style={{ fontSize: "38px", fontWeight: "800", color: "var(--text-white)" }}>
-            {formatToNaira(userProfile?.balance || 0)}
+            {formatToNaira(userProfile.balance || 0)}
           </h3>
         </div>
         
@@ -146,6 +155,7 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     </div>
   ); 
 }
+
 
 
 

@@ -1,3 +1,9 @@
+
+
+
+
+
+
 import { createContext, useContext, useState, useEffect } from "react";
 import { 
   createUserWithEmailAndPassword, 
@@ -35,7 +41,9 @@ export const AuthProvider = ({ children }) => {
   const loginUserAccount = async (email, password) => {
     setIsLoading(true);
     try {
-      return await signInWithEmailAndPassword(auth, email.trim(), password);
+      // ⬇️ FIXED: Clears out hidden accidental spaces and trailing caps on mobile keyboards to kill 400 errors ⬇️
+      const sanitizedEmail = email.trim().toLowerCase();
+      return await signInWithEmailAndPassword(auth, sanitizedEmail, password);
     } catch (error) {
       setIsLoading(false);
       throw error;
@@ -116,8 +124,3 @@ export const useAuth = () => {
   }
   return customContextInstance;
 };
-
-
-
-
-

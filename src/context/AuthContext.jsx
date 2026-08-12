@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, useEffect } from "react";
+
+
+import { createContext, useState, useEffect } from "react";
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -9,7 +11,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { createUserProfileRecord } from "../api/users";
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -57,7 +59,6 @@ export const AuthProvider = ({ children }) => {
     const unsubscribeFromAuthObserver = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
 
-      // Tear down any active snapshot listeners left over from previous users
       if (unsubscribeFromFirestoreSnapshot) {
         unsubscribeFromFirestoreSnapshot();
       }
@@ -69,12 +70,14 @@ export const AuthProvider = ({ children }) => {
           (documentSnapshot) => {
             if (documentSnapshot.exists()) {
               setUserProfile(documentSnapshot.data());
+            } else {
+              setUserProfile(null); // No placeholders, just null if the data hasn't arrived yet
             }
-            setIsLoading(false); // ◄ Turn off yellow spinner instantly when data lands
+            setIsLoading(false); // ◄ ALWAYS kills the yellow spinner instantly here
           },
           (error) => {
             console.error("Firestore real-time connection error:", error);
-            setIsLoading(false); // ◄ Safety catch: Turn off spinner immediately if network/rules block read
+            setIsLoading(false); // ◄ Safety catch: Turn off spinner if network blocks read
           }
         );
       } else {
@@ -106,15 +109,6 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => {
-  const customContextInstance = useContext(AuthContext);
-  if (!customContextInstance) {
-    throw new Error("Architecture Violation: useAuth must be consumed inside a declared AuthProvider.");
-  }
-  return customContextInstance;
-};
-
 
 
 

@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect } from "react";
 import { 
   createUserWithEmailAndPassword, 
@@ -6,20 +5,15 @@ import {
   signOut, 
   onAuthStateChanged 
 } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, getDoc } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { createUserProfileRecord } from "../api/users";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(() => auth.currentUser);
-  
-  const [userProfile, setUserProfile] = useState(() => {
-    const saved = localStorage.getItem("velora_profile_sync");
-    return saved ? JSON.parse(saved) : null;
-  });
-  
+  const [currentUser, setCurrentUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const registerUserAccount = async (formPayload) => {
@@ -40,14 +34,23 @@ export const AuthProvider = ({ children }) => {
 
   const loginUserAccount = async (email, password) => {
     setIsLoading(true);
-    localStorage.removeItem("velora_profile_sync"); // Clear stale caches on fresh login attempts
-    setUserProfile(null);
-    return signInWithEmailAndPassword(auth, email.trim(), password);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      
+      // Fetch profile snapshot instantly on login event to kill loading screens safely
+      const profileSnapshot = await getDoc(doc(db, "users", userCredential.user.uid));
+      if (profileSnapshot.exists()) {
+        setUserProfile(profileSnapshot.snapshot.data());
+      }
+      return userCredential;
+    } catch (error) {
+      setIsLoading(false);
+      throw error;
+    }
   };
 
   const logoutUserAccount = async () => {
     setIsLoading(true);
-    localStorage.removeItem("velora_profile_sync");
     setUserProfile(null);
     setCurrentUser(null);
     setIsLoading(false);
@@ -65,25 +68,21 @@ export const AuthProvider = ({ children }) => {
           doc(db, "users", user.uid),
           (documentSnapshot) => {
             if (documentSnapshot.exists()) {
-              const profileData = documentSnapshot.data();
-              setUserProfile(profileData);
-              localStorage.setItem("velora_profile_sync", JSON.stringify(profileData));
+              setUserProfile(documentSnapshot.data());
             }
-            // ◄ FIXED: Only turn off the loading spinner AFTER data is completely ready
-            setIsLoading(false); 
+            setIsLoading(false); // Turn off the spinner immediately
           },
           (error) => {
-            console.error("Firestore tracking error:", error);
-            setIsLoading(false);
+            console.error("Firestore connection lag:", error);
+            setIsLoading(false); // Force-kill spinner on failure
           }
         );
       } else {
         if (unsubscribeFromFirestoreSnapshot) {
           unsubscribeFromFirestoreSnapshot();
         }
-        localStorage.removeItem("velora_profile_sync");
         setUserProfile(null);
-        setIsLoading(false);
+        setIsLoading(false); // Turn off spinner if logged out
       }
     });
 
@@ -118,4 +117,6 @@ export const useAuth = () => {
   }
   return customContextInstance;
 };
+
+
 

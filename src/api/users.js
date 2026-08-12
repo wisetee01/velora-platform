@@ -28,8 +28,9 @@ export const createUserProfileRecord = async (userId, { fullName, email, usernam
     email: email.trim().toLowerCase(),
     username: username.trim().toLowerCase(),
     packagePlan: lowerPlan,
-    balance: lowerPlan === "platinum" ? 13500 : 50750, 
+    balance: lowerPlan === "platinum" ? 31500 : 50750, // ◄ FIXED: Corrected Platinum bonus typo to ₦31,500
     isActivated: false,
+    isVerified: false, // ◄ FIXED: Injected the verification field matching your Dashboard code requirements
     createdAt: new Date().toISOString()
   };
 

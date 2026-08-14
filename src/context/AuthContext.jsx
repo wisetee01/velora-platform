@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import { createContext, useContext, useState, useEffect } from "react";
 import { 
   createUserWithEmailAndPassword, 
@@ -41,7 +35,6 @@ export const AuthProvider = ({ children }) => {
   const loginUserAccount = async (email, password) => {
     setIsLoading(true);
     try {
-      // ⬇️ FIXED: Clears out hidden accidental spaces and trailing caps on mobile keyboards to kill 400 errors ⬇️
       const sanitizedEmail = email.trim().toLowerCase();
       return await signInWithEmailAndPassword(auth, sanitizedEmail, password);
     } catch (error) {
@@ -58,7 +51,6 @@ export const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  // Pure Native Live-Sync Database Observer
   useEffect(() => {
     let unsubscribeFromFirestoreSnapshot = null;
 
@@ -70,20 +62,19 @@ export const AuthProvider = ({ children }) => {
       }
 
       if (user) {
-        // Pure native listener path: Handles reloads and log-ins instantly in one stream
         unsubscribeFromFirestoreSnapshot = onSnapshot(
           doc(db, "users", user.uid),
           (documentSnapshot) => {
             if (documentSnapshot.exists()) {
               setUserProfile(documentSnapshot.data());
             } else {
-              setUserProfile(null); // Pure database state lookup
+              setUserProfile(null); 
             }
-            setIsLoading(false); // ◄ ALWAYS kills the yellow spinner instantly here
+            setIsLoading(false); 
           },
           (error) => {
             console.error("Firestore real-time connection error:", error);
-            setIsLoading(false); // Safety catch
+            setIsLoading(false); 
           }
         );
       } else {
@@ -116,7 +107,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// ⬇️ RESTORED INTERNAL EXPORT: Instantly clears the Vercel build failures across all screens ⬇️
 export const useAuth = () => {
   const customContextInstance = useContext(AuthContext);
   if (!customContextInstance) {
@@ -124,3 +114,4 @@ export const useAuth = () => {
   }
   return customContextInstance;
 };
+

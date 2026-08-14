@@ -21,20 +21,18 @@ export const createUserProfileRecord = async (userId, { fullName, email, usernam
 
   const userDocumentReference = doc(db, "users", userId);
 
-  // Directly inline the ternary assignment to clear any VS Code cache warnings
   const targetLedgerPayload = {
     uid: userId,
     fullName: fullName.trim(),
     email: email.trim().toLowerCase(),
     username: username.trim().toLowerCase(),
     packagePlan: lowerPlan,
-    balance: lowerPlan === "platinum" ? 31500 : 50750, // ◄ FIXED: Corrected Platinum bonus typo to ₦31,500
+    balance: lowerPlan === "platinum" ? 31500 : 50750, 
     isActivated: false,
-    isVerified: false, // ◄ FIXED: Injected the verification field matching your Dashboard code requirements
+    isVerified: false, 
     createdAt: new Date().toISOString()
   };
 
-  // Triggers setDoc. Any subsequent client-side update attempts will be auto-dropped by Firestore rules.
   await setDoc(userDocumentReference, targetLedgerPayload);
 };
 
@@ -56,3 +54,4 @@ export const fetchUserProfileRecord = async (userId) => {
 
   return dataSnapshot.data();
 };
+

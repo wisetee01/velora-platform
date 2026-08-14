@@ -11,19 +11,18 @@ import Dashboard from "../screens/Dashboard";
  * Manages view switching based on explicit authentication state matrix parameters.
  */
 export default function AppRouter() {
-  const { currentUser, isLoading } = useAuth();
+  const { currentUser, userProfile, isLoading } = useAuth();
   const [authScreenView, setAuthScreenView] = useState("LANDING"); // Values: "LANDING" or "AUTH"
   const [selectedPlan, setSelectedPlan] = useState(null);
   
   // Custom router state tracking registration overrides to trigger automatic popups
   const [forceActivationPopup, setForceActivationPopup] = useState(false);
 
-  // ⬇️ SAFELY OVERRIDE INITIALIZATION TIMING FREEZES INSIDE RESTRICTED TELEGRAM BROWSER WEBVIEWS ⬇️
+  // Safely override initialization timing freezes inside restricted browser environments
   const [isNetworkTimeoutCleared, setIsNetworkTimeoutCleared] = useState(false);
 
   useEffect(() => {
-    // If your cloud database state takes more than 2500ms to verify credentials inside an in-app browser frame,
-    // explicitly trigger a fallback override to kill the yellow spinner before the layout engine hangs.
+    // Timeout guard to prevent eternal loading wheels if the network connection stalls
     const loadingGuardTimeout = setTimeout(() => {
       setIsNetworkTimeoutCleared(true);
     }, 2500);
@@ -31,7 +30,7 @@ export default function AppRouter() {
     return () => clearTimeout(loadingGuardTimeout);
   }, [isLoading]);
 
-  // Combine native background auth states with our structural timeout fallback indicator
+  // Combine background database loading states with our network override guard
   const shouldRenderSpinner = isLoading && !isNetworkTimeoutCleared;
 
   /**
@@ -46,13 +45,13 @@ export default function AppRouter() {
     // Catch the special registration success signal to arm the dashboard auto-open flag
     if (targetScreen === "DASHBOARD_WITH_ACTIVATION_FORCE") {
       setForceActivationPopup(true);
-      setAuthScreenView("LANDING"); // Reset landing router viewport state parameters
+      setAuthScreenView("LANDING"); 
     } else if (targetScreen === "LANDING" || targetScreen === "AUTH") {
       setAuthScreenView(targetScreen);
     }
   };
 
-  // Render tracker layout using global variables only if safely within the network timeout bounds
+  // Render yellow tracker loading loop layout if safely within the network hydration bounds
   if (shouldRenderSpinner) {
     return (
       <div className="velora-canvas" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0b0518" }}>
@@ -61,8 +60,8 @@ export default function AppRouter() {
     );
   }
 
-  // UNBREACHABLE GUARD RULE: If a valid authentication user session exists, ALWAYS force Dashboard
-  if (currentUser) {
+  // ⬇️ UNBREACHABLE NAVIGATION RULE: Force Dashboard ONLY if user auth AND user database profile data exist ⬇️
+  if (currentUser && userProfile) {
     return (
       <Dashboard 
         onNavigate={navigateTo} 
@@ -72,10 +71,11 @@ export default function AppRouter() {
     );
   }
 
-  // Fallback to public routes if no active authentication session is discovered
+  // Fallback to public routes if no active authentication database profile data is discovered yet
   if (authScreenView === "AUTH") {
     return <AuthScreen onNavigate={navigateTo} preferredPlan={selectedPlan} />;
   }
 
   return <LandingPage onNavigate={navigateTo} />;
 }
+

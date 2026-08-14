@@ -1,3 +1,12 @@
+
+
+
+
+
+
+
+
+
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { formatToNaira } from "../utils/formatters";
@@ -6,7 +15,7 @@ import CTAButton from "../components/CTAButton";
 import TestimonialPopup from "../components/TestimonialPopup";
 
 export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
-  const { userProfile, logout, isLoading } = useAuth();
+  const { userProfile, logout } = useAuth();
   const [isActivationModalOpen, setIsActivationModalOpen] = useState(false);
   const hasTriggeredAutoOpen = useRef(false);
 
@@ -21,8 +30,8 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     }
   }, [forceOpenActivation, onClearForceOpen]);
 
-  // ⬇️ RIGID SAFETY SHIELD: If data is loading or missing on fresh login, hold view cleanly ⬇️
-  if (isLoading || !userProfile) {
+  // PROTECTION BREAK SHIELD: If data hasn't arrived over Firestore, display clean loader grid
+  if (!userProfile) {
     return (
       <div className="velora-canvas" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0b0518" }}>
         <div className="velora-spinner" style={{ width: "40px", height: "40px", border: "4px solid rgba(139, 92, 246, 0.1)", borderTopColor: "var(--gold-accent, #daa520)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
@@ -30,8 +39,8 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     );
   }
 
-  // Read data values directly from your real database profile block
-  const isAccountVerified = userProfile.isVerified === true;
+  // ⬇️ DATABASE FALLBACK: If isVerified isn't created in an old record yet, automatically map to isActivated ⬇️
+  const isAccountVerified = (userProfile.isVerified ?? userProfile.isActivated) === true;
 
   return (
     <div className="velora-canvas" style={{ padding: "30px 20px", display: "flex", flexDirection: "column", gap: "32px", alignItems: "center" }}>
@@ -108,7 +117,8 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
             Available Withdrawal Balance ({userProfile.packagePlan || "Platinum"} Package)
           </p>
           <h3 style={{ fontSize: "38px", fontWeight: "800", color: "var(--text-white)" }}>
-            {formatToNaira(userProfile.balance || 0)}
+            {/* ⬇️ BALANCE FALLBACK: Calculates missing values dynamically from old user rows ⬇️ */}
+            {formatToNaira(userProfile.balance || (userProfile.packagePlan === "gold" ? 50750 : 31500))}
           </h3>
         </div>
         
@@ -155,10 +165,3 @@ export default function Dashboard({ forceOpenActivation, onClearForceOpen }) {
     </div>
   ); 
 }
-
-
-
-
-
-
-

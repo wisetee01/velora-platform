@@ -1,5 +1,6 @@
-import { collection, doc, addDoc, updateDoc, increment } from "firebase/firestore";
+import { collection, doc, addDoc, updateDoc, increment, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../config/firebase";
+
 
 /**
  * Validates wallet bounds and logs a formal pending payout ticket inside Firestore.
@@ -52,4 +53,26 @@ export const requestPlatformWithdrawal = async (userId, userProfile, payoutAmoun
   });
 
   return withdrawalTicketPayload;
+
 };
+
+/**
+ * Attaches a real-time data stream to fetch previous payout requests matching a specific user.
+ */
+export const subscribeToUserWithdrawals = (userId, onDataUpdate) => {
+  if (!userId) return () => {};
+  
+  const userPayoutsQuery = query(
+    collection(db, "withdrawals"), 
+    where("uid", "==", userId)
+  );
+  
+  return onSnapshot(userPayoutsQuery, (snapshot) => {
+    const historyList = snapshot.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+    onDataUpdate(historyList);
+  });
+};
+

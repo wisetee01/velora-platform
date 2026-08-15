@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { formatToNaira } from "../utils/formatters";
-import { requestPlatformWithdrawal } from "../api/withdrawals";
+import { requestPlatformWithdrawal, subscribeToUserWithdrawals } from "../api/withdrawals";
 
 export default function WithdrawPortal({ onNavigate }) {
   const { currentUser, userProfile } = useAuth();
@@ -9,6 +9,16 @@ export default function WithdrawPortal({ onNavigate }) {
   const [bankDetails, setBankDetails] = useState({ bankName: "", accountNumber: "", accountName: "" });
   const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [payoutHistory, setPayoutHistory] = useState([]);
+
+  // Attaches the real-time background stream listener for the user's tickets
+  useEffect(() => {
+    if (!currentUser?.uid) return;
+    const unsubscribeHistory = subscribeToUserWithdrawals(currentUser.uid, (historyData) => {
+      setPayoutHistory(historyData);
+    });
+    return () => unsubscribeHistory();
+  }, [currentUser]);
 
   const handleInputChange = (e) => {
     setBankDetails({ ...bankDetails, [e.target.name]: e.target.value });
@@ -24,7 +34,6 @@ export default function WithdrawPortal({ onNavigate }) {
     setMessage({ type: "", text: "" });
 
     try {
-      // Safe layout balance checker fallback matching across user options smoothly
       const currentBalance = userProfile?.balance !== undefined ? userProfile.balance : (userProfile?.packagePlan === "gold" ? 50750 : 31500);
       const unifiedProfileContext = { ...userProfile, balance: currentBalance };
 
@@ -45,7 +54,6 @@ export default function WithdrawPortal({ onNavigate }) {
     color: "var(--text-white, #fff)", outline: "none", fontSize: "14px", marginTop: "6px"
   };
 
-  // Safe fallback to read balance fields correctly across all account profile formats
   const displayWalletFunds = userProfile?.balance !== undefined ? userProfile.balance : (userProfile?.packagePlan === "gold" ? 50750 : 31500);
 
   return (
@@ -70,7 +78,7 @@ export default function WithdrawPortal({ onNavigate }) {
 
         <form onSubmit={handlePayoutSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
-            <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Amount to Withdraw (Minimum ₦70,000)</label>
+            <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Amount to Withdraw (Minimum ₦10,000)</label>
             <input type="number" name="amount" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 15000" style={formInputStyle} />
           </div>
 
@@ -93,6 +101,37 @@ export default function WithdrawPortal({ onNavigate }) {
             {isProcessing ? "PROCESSING CHECKOUT..." : "SUBMIT WITHDRAWAL REQUEST"}
           </button>
         </form>
+      </div>
+
+      {/* LIVE WITHDRAWAL HISTORY LEDGER BOARD */}
+      <div className="neon-border-glow" style={{ background: "var(--bg-dark-card)", maxWidth: "500px", width: "100%", padding: "24px", borderRadius: "16px", marginTop: "12px" }}>
+        <h3 style={{ color: "var(--text-white)", fontSize: "14px", margin: "0 0 16px 0", fontWeight: "800" }}>📋 YOUR PAYOUT LOG HISTORY</h3>
+        
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {payoutHistory.length === 0 ? (
+            <p style={{ color: "var(--text-slate)", fontSize: "13px", margin: 0, textAlign: "center", padding: "12px" }}>You haven't submitted any cash-out requests yet.</p>
+          ) : (
+            payoutHistory.map((ticket) => {
+              const isPending = ticket.status === "pending";
+              return (
+                <div key={ticket.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--bg-deep-purple, #1a102f)", padding: "14px 16px", borderRadius: "8px", border: isPending ? "1px solid rgba(218, 165, 32, 0.2)" : "1px solid rgba(16, 185, 129, 0.2)" }}>
+                  <div>
+                    <span style={{ display: "block", color: "var(--text-white)", fontWeight: "700", fontSize: "15px" }}>{formatToNaira(ticket.amount)}</span>
+                    <span style={{ fontSize: "11px", color: "var(--text-slate)" }}>{ticket.bankName} • {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : "Recent"}</span>
+                  </div>
+                  <span style={{ 
+                    fontSize: "11px", fontWeight: "800", padding: "4px 10px", borderRadius: "4px", textTransform: "uppercase",
+                    background: isPending ? "rgba(218, 165, 32, 0.1)" : "rgba(16, 185, 129, 0.1)",
+                    color: isPending ? "var(--gold-accent, #daa520)" : "#10B981",
+                    border: isPending ? "1px solid rgba(218, 165, 32, 0.2)" : "1px solid rgba(16, 185, 129, 0.2)"
+                  }}>
+                    {ticket.status}
+                  </span>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );

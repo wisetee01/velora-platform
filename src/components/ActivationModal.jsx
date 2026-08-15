@@ -16,7 +16,7 @@ export default function ActivationModal({ onClose }) {
 
   // DYNAMIC PRICE CHECKER: Determine the exact price based on user's registered package plan string
   const userPlan = userProfile.packagePlan ? userProfile.packagePlan.toLowerCase() : "platinum";
-  const explicitAmountToPay = userPlan === "gold" ? "₦14,500" : "₦9,000";
+  const explicitAmountToPay = userPlan === "gold" ? "₦10,000" : "₦5,000";
 
   const handlePaymentExecution = () => {
     setShowBankDetails(true);
@@ -144,7 +144,7 @@ export default function ActivationModal({ onClose }) {
             <div style={{ background: "var(--bg-deep-purple, #1a102f)", padding: "16px", borderRadius: "8px", border: "1px solid var(--neon-violet, #8b5cf6)", display: "flex", flexDirection: "column", gap: "10px" }}>
               
               <div style={rowStyle}>
-                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Bank Name: <strong style={{ color: "#fff" }}> KUDA MFB</strong></p>
+                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Bank Name: <strong style={{ color: "#fff" }}> Paga </strong></p>
                 <button 
                   type="button" 
                   style={copyButtonStyle} 
@@ -155,11 +155,11 @@ export default function ActivationModal({ onClose }) {
               </div>
 
               <div style={rowStyle}>
-                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Account Name: <strong style={{ color: "#fff" }}>SAMAD OPEYEMI SODEKE</strong></p>
+                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Account Name: <strong style={{ color: "#fff" }}>TAIWO MAROOF</strong></p>
               </div>
 
               <div style={rowStyle}>
-                <p style={{ margin: 0, fontSize: "15px", color: "var(--text-slate)" }}>Account Number: <strong className="gold-text-accent" style={{ fontSize: "18px", letterSpacing: "1px" }}>2015456289</strong></p>
+                <p style={{ margin: 0, fontSize: "15px", color: "var(--text-slate)" }}>Account Number: <strong className="gold-text-accent" style={{ fontSize: "18px", letterSpacing: "1px" }}>0522705397</strong></p>
                 <button 
                   type="button" 
                   style={{ ...copyButtonStyle, background: "var(--gold-accent)", color: "var(--bg-deep-purple)", border: "none" }} 

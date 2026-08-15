@@ -103,8 +103,8 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
               <div>
                 <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)", marginBottom: "6px" }}>Select Tier package</label>
                 <select name="packagePlan" value={formState.packagePlan} onChange={handleInputChange} style={{ width: "100%", padding: "12px", borderRadius: "8px", background: "var(--bg-deep-purple)", border: "1px solid var(--neon-violet)", color: "var(--text-white)", outline: "none" }}>
-                  <option value="platinum">Velora Platinum (₦9,000)</option>
-                  <option value="gold">Velora Gold (₦14,500)</option>
+                  <option value="platinum">Velora Platinum (₦5,000)</option>
+                  <option value="gold">Velora Gold (₦10,000)</option>
                 </select>
               </div>
             </>

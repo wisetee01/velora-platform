@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 import { formatToNaira } from "../utils/formatters";
 import { completeDailyVideoTask } from "../api/tasks";
 
@@ -11,14 +11,14 @@ export default function VideoTasks({ onNavigate }) {
   const [statusMessage, setStatusMessage] = useState({ type: "", text: "" });
 
   // Explicit marketing reward multipliers calculated cleanly by chosen plan tiers
-  const dailyEarningRate = userProfile?.packagePlan === "gold" ? 5000 : 3000;
+  const dailyEarningRate = userProfile?.packagePlan === "gold" ? 3000 : 1500;
   const todayString = new Date().toISOString().split("T")[0];
   const isTaskAlreadyDoneToday = userProfile?.completedTasks?.some(t => t.date === todayString);
 
   // Dynamic template repository for video items mapping across your layout canvas
   const availableVideoClips = [
-    { id: "vid_01", title: "Premium Brand Promotion Review", duration: "45s", embedId: "dQw4w9WgXcQ" },
-    { id: "vid_02", title: "Digital Asset Performance Metric Overview", duration: "60s", embedId: "dQw4w9WgXcQ" },
+    { id: "vid_01", title: "Premium Brand Promotion Review", duration: "30s", embedId: "dQw4w9WgXcQ" },
+    { id: "vid_02", title: "Digital Asset Performance Metric Overview", duration: "30s", embedId: "dQw4w9WgXcQ" },
     { id: "vid_03", title: "Velora Community Scaling Milestone Feed", duration: "30s", embedId: "dQw4w9WgXcQ" }
   ];
 

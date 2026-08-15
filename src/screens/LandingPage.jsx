@@ -108,14 +108,14 @@ export default function LandingPage({ onNavigate }) {
       <section style={{ width: "100%", maxWidth: "900px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "32px", marginTop: "20px" }}>
         <PackageCard 
           planType="Platinum" 
-          cost={9000} 
+          cost={5000} 
           initialBalance={31500} 
           features={platinumFeatures} 
           onSelectPlan={(plan) => onNavigate("AUTH", plan)} 
         />
         <PackageCard 
           planType="Gold" 
-          cost={14500} 
+          cost={10000} 
           initialBalance={50750} 
           features={goldFeatures} 
           onSelectPlan={(plan) => onNavigate("AUTH", plan)} 

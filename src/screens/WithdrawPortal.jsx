@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 import { formatToNaira } from "../utils/formatters";
 import { requestPlatformWithdrawal } from "../api/withdrawals";
 
@@ -70,7 +70,7 @@ export default function WithdrawPortal({ onNavigate }) {
 
         <form onSubmit={handlePayoutSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
-            <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Amount to Withdraw (Minimum ₦10,000)</label>
+            <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Amount to Withdraw (Minimum ₦70,000)</label>
             <input type="number" name="amount" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 15000" style={formInputStyle} />
           </div>
 

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { formatToNaira } from "../utils/formatters";
+// ⬇️ FIXED: Pointing directly to AuthContext to match your project root folders cleanly ⬇️
+import { useAuth } from "../context/AuthContext"; 
 import { 
   subscribeToUnverifiedUsers, 
   subscribeToPendingWithdrawals, 
@@ -13,7 +15,7 @@ export default function AdminPanel({ onNavigate }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [adminNotice, setAdminNotice] = useState({ type: "", text: "" });
 
-  // 1. CONSUME NATIVE STREAM SUBSCRIPTIONS FROM OUR CENTRALIZED DATA LAYER
+  // CONSUME NATIVE STREAM SUBSCRIPTIONS FROM OUR CENTRALIZED DATA LAYER
   useEffect(() => {
     const unsubscribeUsers = subscribeToUnverifiedUsers((usersList) => {
       setUnverifiedUsers(usersList);
@@ -145,3 +147,4 @@ export default function AdminPanel({ onNavigate }) {
     </div>
   );
 }
+

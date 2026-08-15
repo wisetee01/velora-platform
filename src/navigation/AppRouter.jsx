@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 
 // Reusable structural component imports with verified project root paths
 import LandingPage from "../screens/LandingPage";

@@ -81,14 +81,14 @@ export default function WithdrawPortal({ onNavigate }) {
         {/* ⬇️ SEAMLESS ACCESS CONTROL SHIELD DETECTOR GRID TUNNEL ⬇️ */}
         {!systemSettings.withdrawalsEnabled ? (
           <div style={{ border: "1px dashed #EF4444", background: "rgba(239, 68, 68, 0.05)", padding: "32px 20px", borderRadius: "12px", textAlign: "center" }}>
-            <h3 style={{ color: "#EF4444", fontSize: "18px", margin: "0 0 8px 0", fontWeight: "800" }}>❌ WITHDRAWAL UNAVAILABLE</h3>
+            <h3 style={{ color: "#EF4444", fontSize: "18px", margin: "0 0 8px 0", fontWeight: "800" }}> WITHDRAWAL UNAVAILABLE</h3>
             <p style={{ color: "var(--text-white)", fontSize: "13px", margin: 0, lineHeight: "1.6" }}>Withdrawals are currently paused by the platform. No wallet is currently open for withdrawal.</p>
           </div>
         ) : (
           <form onSubmit={handlePayoutSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
-              <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Amount to Withdraw (Minimum ₦10,000)</label>
-              <input type="number" name="amount" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 15000" style={formInputStyle} />
+              <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Amount to Withdraw (Minimum ₦70,000)</label>
+              <input type="number" name="amount" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 70000" style={formInputStyle} />
             </div>
             <div>
               <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Select Destination Bank</label>

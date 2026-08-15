@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { formatToNaira } from "../utils/formatters";
 import { requestPlatformWithdrawal, subscribeToUserWithdrawals } from "../api/withdrawals";
+import { subscribeToSystemSettings } from "../api/admin"; // ◄ INJECTED THE LIVE SWITCH ACCESS CONTROL LINK
 
 export default function WithdrawPortal({ onNavigate }) {
   const { currentUser, userProfile } = useAuth();
@@ -10,14 +11,17 @@ export default function WithdrawPortal({ onNavigate }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [payoutHistory, setPayoutHistory] = useState([]);
+  const [systemSettings, setSystemSettings] = useState({ withdrawalsEnabled: true }); // ◄ TRACKS CENTRAL LOCK STATE
 
-  // Attaches the real-time background stream listener for the user's tickets
   useEffect(() => {
     if (!currentUser?.uid) return;
-    const unsubscribeHistory = subscribeToUserWithdrawals(currentUser.uid, (historyData) => {
-      setPayoutHistory(historyData);
-    });
-    return () => unsubscribeHistory();
+    const unsubscribeHistory = subscribeToUserWithdrawals(currentUser.uid, setPayoutHistory);
+    const unsubscribeSettings = subscribeToSystemSettings(setSystemSettings);
+
+    return () => {
+      unsubscribeHistory();
+      unsubscribeSettings();
+    };
   }, [currentUser]);
 
   const handleInputChange = (e) => {
@@ -26,6 +30,7 @@ export default function WithdrawPortal({ onNavigate }) {
 
   const handlePayoutSubmit = async (e) => {
     e.preventDefault();
+    if (!systemSettings.withdrawalsEnabled) return setMessage({ type: "error", text: "Withdrawals are currently paused by the platform." });
     if (!amount || !bankDetails.bankName || !bankDetails.accountNumber || !bankDetails.accountName) {
       return setMessage({ type: "error", text: "Please fill out all withdrawal form fields." });
     }
@@ -41,11 +46,8 @@ export default function WithdrawPortal({ onNavigate }) {
       setMessage({ type: "success", text: "Payout Request Lodged! Your funds are pending approval." });
       setAmount("");
       setBankDetails({ bankName: "", accountNumber: "", accountName: "" });
-    } catch (err) {
-      setMessage({ type: "error", text: err.message });
-    } finally {
-      setIsProcessing(false);
-    }
+    } catch (err) { setMessage({ type: "error", text: err.message }); }
+    finally { setIsProcessing(false); }
   };
 
   const formInputStyle = {
@@ -76,37 +78,40 @@ export default function WithdrawPortal({ onNavigate }) {
           <p style={{ color: message.type === "error" ? "#EF4444" : "#10B981", background: message.type === "error" ? "rgba(239, 68, 68, 0.1)" : "rgba(16, 185, 129, 0.1)", padding: "12px", borderRadius: "8px", fontSize: "13px", marginBottom: "20px", border: message.type === "error" ? "1px solid rgba(239, 68, 68, 0.2)" : "1px solid rgba(16, 185, 129, 0.2)" }}>{message.text}</p>
         )}
 
-        <form onSubmit={handlePayoutSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <div>
-            <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Amount to Withdraw (Minimum ₦10,000)</label>
-            <input type="number" name="amount" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 15000" style={formInputStyle} />
+        {/* ⬇️ SEAMLESS ACCESS CONTROL SHIELD DETECTOR GRID TUNNEL ⬇️ */}
+        {!systemSettings.withdrawalsEnabled ? (
+          <div style={{ border: "1px dashed #EF4444", background: "rgba(239, 68, 68, 0.05)", padding: "32px 20px", borderRadius: "12px", textAlign: "center" }}>
+            <h3 style={{ color: "#EF4444", fontSize: "18px", margin: "0 0 8px 0", fontWeight: "800" }}> WITHDRAWAL UNAVAILABLE</h3>
+            <p style={{ color: "var(--text-white)", fontSize: "13px", margin: 0, lineHeight: "1.6" }}>Withdrawals are currently paused by the platform. No wallet is currently open for withdrawal.</p>
           </div>
-
-          <div>
-            <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Select Destination Bank</label>
-            <input type="text" name="bankName" value={bankDetails.bankName} onChange={handleInputChange} placeholder="e.g. Access Bank, GTBank, UBA" style={formInputStyle} />
-          </div>
-
-          <div>
-            <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Account Number (10 Digits)</label>
-            <input type="text" maxLength="10" name="accountNumber" value={bankDetails.accountNumber} onChange={handleInputChange} placeholder="e.g. 0123456789" style={formInputStyle} />
-          </div>
-
-          <div>
-            <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Account Name</label>
-            <input type="text" name="accountName" value={bankDetails.accountName} onChange={handleInputChange} placeholder="e.g. John Doe" style={formInputStyle} />
-          </div>
-
-          <button type="submit" className="premium-pulse-button" style={{ width: "100%", padding: "14px", borderRadius: "8px", marginTop: "8px", cursor: "pointer", fontWeight: "700" }} disabled={isProcessing}>
-            {isProcessing ? "PROCESSING CHECKOUT..." : "SUBMIT WITHDRAWAL REQUEST"}
-          </button>
-        </form>
+        ) : (
+          <form onSubmit={handlePayoutSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div>
+              <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Amount to Withdraw (Minimum ₦70,000)</label>
+              <input type="number" name="amount" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 70000" style={formInputStyle} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Select Destination Bank</label>
+              <input type="text" name="bankName" value={bankDetails.bankName} onChange={handleInputChange} placeholder="e.g. Access Bank, GTBank, UBA" style={formInputStyle} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Account Number (10 Digits)</label>
+              <input type="text" maxLength="10" name="accountNumber" value={bankDetails.accountNumber} onChange={handleInputChange} placeholder="e.g. 0123456789" style={formInputStyle} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: "12px", color: "var(--text-slate)" }}>Account Name</label>
+              <input type="text" name="accountName" value={bankDetails.accountName} onChange={handleInputChange} placeholder="e.g. John Doe" style={formInputStyle} />
+            </div>
+            <button type="submit" className="premium-pulse-button" style={{ width: "100%", padding: "14px", borderRadius: "8px", marginTop: "8px", cursor: "pointer", fontWeight: "700" }} disabled={isProcessing}>
+              {isProcessing ? "PROCESSING CHECKOUT..." : "SUBMIT WITHDRAWAL REQUEST"}
+            </button>
+          </form>
+        )}
       </div>
 
       {/* LIVE WITHDRAWAL HISTORY LEDGER BOARD */}
       <div className="neon-border-glow" style={{ background: "var(--bg-dark-card)", maxWidth: "500px", width: "100%", padding: "24px", borderRadius: "16px", marginTop: "12px" }}>
         <h3 style={{ color: "var(--text-white)", fontSize: "14px", margin: "0 0 16px 0", fontWeight: "800" }}>📋 YOUR PAYOUT LOG HISTORY</h3>
-        
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {payoutHistory.length === 0 ? (
             <p style={{ color: "var(--text-slate)", fontSize: "13px", margin: 0, textAlign: "center", padding: "12px" }}>You haven't submitted any cash-out requests yet.</p>
@@ -136,3 +141,4 @@ export default function WithdrawPortal({ onNavigate }) {
     </div>
   );
 }
+

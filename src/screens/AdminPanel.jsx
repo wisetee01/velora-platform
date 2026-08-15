@@ -1,42 +1,39 @@
 import { useState, useEffect } from "react";
 import { formatToNaira } from "../utils/formatters";
-// ⬇️ FIXED: Pointing directly to AuthContext to match your project root folders cleanly ⬇️
 import { useAuth } from "../context/AuthContext"; 
 import { 
   subscribeToUnverifiedUsers, 
   subscribeToPendingWithdrawals, 
   approveUserRegistration, 
-  approvePlatformWithdrawal 
+  approvePlatformWithdrawal,
+  subscribeToSystemSettings,
+  toggleWithdrawalGate
 } from "../api/admin";
 
 export default function AdminPanel({ onNavigate }) {
   const [unverifiedUsers, setUnverifiedUsers] = useState([]);
   const [pendingPayouts, setPendingPayouts] = useState([]);
+  const [systemSettings, setSystemSettings] = useState({ withdrawalsEnabled: true });
   const [isProcessing, setIsProcessing] = useState(false);
   const [adminNotice, setAdminNotice] = useState({ type: "", text: "" });
 
-  // CONSUME NATIVE STREAM SUBSCRIPTIONS FROM OUR CENTRALIZED DATA LAYER
   useEffect(() => {
-    const unsubscribeUsers = subscribeToUnverifiedUsers((usersList) => {
-      setUnverifiedUsers(usersList);
-    });
-
-    const unsubscribePayouts = subscribeToPendingWithdrawals((ticketsList) => {
-      setPendingPayouts(ticketsList);
-    });
+    const unsubscribeUsers = subscribeToUnverifiedUsers(setUnverifiedUsers);
+    const unsubscribePayouts = subscribeToPendingWithdrawals(setPendingPayouts);
+    const unsubscribeSettings = subscribeToSystemSettings(setSystemSettings);
 
     return () => {
       unsubscribeUsers();
       unsubscribePayouts();
+      unsubscribeSettings();
     };
   }, []);
 
-  const handleUserVerify = async (userId) => {
+  const handleGateToggle = async () => {
     setIsProcessing(true);
-    setAdminNotice({ type: "", text: "" });
     try {
-      await approveUserRegistration(userId);
-      setAdminNotice({ type: "success", text: "User account verified successfully!" });
+      await toggleWithdrawalGate(systemSettings.withdrawalsEnabled);
+      setAdminNotice({ type: "success", text: `Platform withdrawal gate updated successfully!` });
     } catch (err) {
       setAdminNotice({ type: "error", text: err.message });
     } finally {
@@ -44,17 +41,22 @@ export default function AdminPanel({ onNavigate }) {
     }
   };
 
+  const handleUserVerify = async (userId) => {
+    setIsProcessing(true);
+    try {
+      await approveUserRegistration(userId);
+      setAdminNotice({ type: "success", text: "User account verified successfully!" });
+    } catch (err) { setAdminNotice({ type: "error", text: err.message }); }
+    finally { setIsProcessing(false); }
+  };
+
   const handleWithdrawalApprove = async (ticketId) => {
     setIsProcessing(true);
-    setAdminNotice({ type: "", text: "" });
     try {
       await approvePlatformWithdrawal(ticketId);
       setAdminNotice({ type: "success", text: "Withdrawal ticket signed off as successful!" });
-    } catch (err) {
-      setAdminNotice({ type: "error", text: err.message });
-    } finally {
-      setIsProcessing(false);
-    }
+    } catch (err) { setAdminNotice({ type: "error", text: err.message }); }
+    finally { setIsProcessing(false); }
   };
 
   const tableHeaderStyle = { padding: "12px", textAlign: "left", color: "var(--text-slate)", fontSize: "12px", borderBottom: "1px solid rgba(139, 92, 246, 0.2)" };
@@ -65,7 +67,7 @@ export default function AdminPanel({ onNavigate }) {
       <div style={{ width: "100%", maxWidth: "1100px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
           <h2 style={{ color: "var(--text-white)", margin: 0, fontSize: "24px", fontWeight: "800" }}>CENTRAL COMMAND SYSTEM 👑</h2>
-          <p style={{ color: "var(--text-slate)", fontSize: "14px", margin: "4px 0 0 0" }}>Manage members and process pending bank withdrawals instantly.</p>
+          <p style={{ color: "var(--text-slate)", fontSize: "14px", margin: "4px 0 0 0" }}>Manage members, toggles, and process pending bank withdrawals instantly.</p>
         </div>
         <button type="button" onClick={() => onNavigate("DASHBOARD")} style={{ background: "transparent", border: "1px solid var(--neon-violet)", color: "var(--text-white)", padding: "10px 20px", borderRadius: "8px", cursor: "pointer", fontSize: "13px" }}>Return to Dashboard</button>
       </div>
@@ -73,6 +75,17 @@ export default function AdminPanel({ onNavigate }) {
       {adminNotice.text && (
         <div style={{ width: "100%", maxWidth: "1100px", padding: "14px", borderRadius: "8px", fontSize: "14px", fontWeight: "600", textAlign: "center", background: adminNotice.type === "error" ? "rgba(239, 68, 68, 0.1)" : "rgba(16, 185, 129, 0.1)", border: adminNotice.type === "error" ? "1px solid #EF4444" : "1px solid #10B981", color: adminNotice.type === "error" ? "#EF4444" : "#10B981" }}>{adminNotice.text}</div>
       )}
+
+      {/* ⬇️ GLOBAL WITHDRAWAL CONTROL TOGGLE SWITCH BOARD MODULE ⬇️ */}
+      <div className="gold-border-frame" style={{ width: "100%", maxWidth: "1100px", background: "var(--bg-dark-card)", padding: "20px 24px", borderRadius: "14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <h4 style={{ margin: 0, color: "var(--text-white)", fontSize: "15px", fontWeight: "700" }}>SYSTEM WALLET SWITCH GATEWAY</h4>
+          <p style={{ margin: "4px 0 0 0", color: "var(--text-slate)", fontSize: "12px" }}>Toggle on or off to completely lock or open user withdrawal checkout panels live.</p>
+        </div>
+        <button type="button" onClick={handleGateToggle} disabled={isProcessing} className="premium-pulse-button" style={{ padding: "12px 24px", borderRadius: "8px", fontWeight: "800", fontSize: "13px", background: systemSettings.withdrawalsEnabled ? "#EF4444" : "#10B981", color: "var(--text-white)", border: "none" }}>
+          {systemSettings.withdrawalsEnabled ? "🔒 FREEZE ALL PLATFORM WITHDRAWALS" : "🔓 OPEN WITHDRAWAL WALLETS LIVE"}
+        </button>
+      </div>
 
       {/* SECTION 1: SIGNUP VERIFICATION MANAGER */}
       <div className="neon-border-glow" style={{ background: "var(--bg-dark-card)", width: "100%", maxWidth: "1100px", borderRadius: "16px", padding: "24px" }}>
@@ -109,7 +122,7 @@ export default function AdminPanel({ onNavigate }) {
 
       {/* SECTION 2: BANK PAYOUT SETTLEMENT TABLE */}
       <div className="neon-border-glow" style={{ background: "var(--bg-dark-card)", width: "100%", maxWidth: "1100px", borderRadius: "16px", padding: "24px" }}>
-        <h3 style={{ color: "var(--text-white)", fontSize: "16px", margin: "0 0 16px 0", fontWeight: "800" }}>💸 PENDING BANK WITHDRAWAL TICKETS ({pendingPayouts.length})</h3>
+        <h3 style={{ color: "var(--text-white)", fontSize: "16px", margin: "0 0 16px 0", fontWeight: "800" }}> PENDING BANK WITHDRAWAL TICKETS ({pendingPayouts.length})</h3>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
@@ -127,7 +140,7 @@ export default function AdminPanel({ onNavigate }) {
               ) : (
                 pendingPayouts.map((ticket) => (
                   <tr key={ticket.id}>
-                    <td style={tableCellStyle}>{ticket.username}</td>
+                    <td style={ticket.id === ticket.id ? tableCellStyle : tableCellStyle}>{ticket.username}</td>
                     <td style={{ ...tableCellStyle, fontWeight: "700" }}>{ticket.bankName}</td>
                     <td style={tableCellStyle}>
                       <div style={{ fontWeight: "800" }}>{ticket.accountNumber}</div>
@@ -147,4 +160,5 @@ export default function AdminPanel({ onNavigate }) {
     </div>
   );
 }
+
 

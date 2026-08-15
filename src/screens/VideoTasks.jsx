@@ -55,7 +55,7 @@ export default function VideoTasks({ onNavigate }) {
 
       {isTaskAlreadyDoneToday ? (
         <div className="gold-border-frame" style={{ width: "100%", maxWidth: "900px", padding: "40px", textAlign: "center", background: "var(--bg-dark-card)", borderRadius: "16px" }}>
-          <h3 style={{ color: "var(--gold-accent)", fontSize: "22px", margin: "0 0 8px 0" }}>🎉 ALL DAILY TASKS COMPLETED</h3>
+          <h3 style={{ color: "var(--gold-accent)", fontSize: "22px", margin: "0 0 8px 0" }}> ALL DAILY TASKS COMPLETED</h3>
           <p style={{ color: "var(--text-white)", fontSize: "14px", margin: 0 }}>Your next premium clip catalog resets automatically at midnight. Keep executing consistent actions!</p>
         </div>
       ) : (

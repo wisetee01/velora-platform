@@ -3,7 +3,7 @@ import TestimonialPopup from "../components/TestimonialPopup";
 import PackageCard from "../components/PackageCard";
 
 export default function LandingPage({ onNavigate }) {
-  const platinumFeatures = ["Access to Platinum Dashboard", "₦31,500 Immediate Welcome Voucher", "Daily Affiliate Commision Access", "24/7 Premium Telegram Channel VIP Invite"];
+  const platinumFeatures = ["Access to Platinum Dashboard", "₦31,500 Immediate Welcome Voucher", "Daily Affiliate Commision Access", "24/7 Premium Whatsapp Channel VIP Invite"];
   const goldFeatures = ["Access to Gold Dashboard", "₦50,750 High-Tier Welcome Voucher", "Priority Fast-Track Withdrawals", "Airtight Step-by-Step Mentorship System Link"];
 
   return (
@@ -48,12 +48,12 @@ export default function LandingPage({ onNavigate }) {
 
         <h2 style={{ fontSize: "42px", fontWeight: "800", color: "var(--text-white)", marginBottom: "20px", lineHeight: "1.2" }}>
           <span className="gold-text-accent">
-            Earn in Dollars, Withdraw in Naira
+            Earn in Naira, Withdraw in Naira
           </span>
         </h2>
         <p style={{ color: "var(--text-slate)", fontSize: "16px", lineHeight: "1.6", marginBottom: "32px" }}>
           Why Global Earners Are Rushing to VELORA <br />
-          Earn in Dollars: Get paid in USD, cash out straight to your Nigerian bank account. <br />
+          Earn in Naira: Get paid in Naira, cash out straight to your Nigerian bank account. <br />
           Instant Welcome Bonus: Get ₦31,500 to ₦50,750 back to WITHDRAW immediately you register. <br />
           Urgent Loans: Borrow money to start or grow your business with zero collateral and no stress. 
         </p>

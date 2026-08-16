@@ -7,7 +7,9 @@ import {
   approveUserRegistration, 
   approvePlatformWithdrawal,
   subscribeToSystemSettings,
-  toggleWithdrawalGate
+  toggleWithdrawalGate,
+   subscribeToAllPendingLoans,
+  updateLoanTicketStatus
 } from "../api/admin";
 
 export default function AdminPanel({ onNavigate }) {
@@ -28,6 +30,33 @@ export default function AdminPanel({ onNavigate }) {
       unsubscribeSettings();
     };
   }, []);
+
+    const [pendingLoans, setPendingLoans] = useState([]);
+
+  // Attaches the real-time background stream listener for incoming loan tickets
+  useEffect(() => {
+    const unsubscribeLoans = subscribeToAllPendingLoans((loansList) => {
+      setPendingLoans(loansList);
+    });
+    return () => unsubscribeLoans();
+  }, []);
+
+  const handleLoanResolve = async (ticketId, targetUserId, loanAmount, decision) => {
+    setIsProcessing(true);
+    setAdminNotice({ type: "", text: "" });
+    try {
+      await updateLoanTicketStatus(ticketId, targetUserId, loanAmount, decision);
+      setAdminNotice({
+        type: "success",
+        text: `Loan request successfully ${decision === "approved" ? "approved and funded" : "declined"}.`
+      });
+    } catch (err) {
+      setAdminNotice({ type: "error", text: err.message });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
 
   const handleGateToggle = async () => {
     setIsProcessing(true);
@@ -157,6 +186,48 @@ export default function AdminPanel({ onNavigate }) {
           </table>
         </div>
       </div>
+
+      {/* SECTION 3: CENTRAL PLATFORM LOAN MANAGER TABLE */}
+      <div className="neon-border-glow" style={{ background: "var(--bg-dark-card)", width: "100%", maxWidth: "1100px", borderRadius: "16px", padding: "24px", marginTop: "12px" }}>
+        <h3 style={{ color: "var(--gold-accent)", fontSize: "16px", margin: "0 0 16px 0", fontWeight: "800" }}>🏦 PENDING PLATFORM CREDIT LOANS ({pendingLoans.length})</h3>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={tableHeaderStyle}>FULL NAME / USERNAME</th>
+                <th style={tableHeaderStyle}>EMAIL ADDRESS</th>
+                <th style={tableHeaderStyle}>REQUESTED CAPITAL</th>
+                <th style={tableHeaderStyle}>ACTION MANAGEMENT SETTLEMENT</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingLoans.length === 0 ? (
+                <tr><td colSpan="4" style={{ ...tableCellStyle, textAlign: "center", padding: "24px", color: "var(--text-slate)" }}>No credit loan requests currently pending verification.</td></tr>
+              ) : (
+                pendingLoans.map((loan) => (
+                  <tr key={loan.id}>
+                    <td style={tableCellStyle}>
+                      <div style={{ fontWeight: "700" }}>{loan.fullName}</div>
+                      <div style={{ fontSize: "11px", color: "var(--text-slate)" }}>@{loan.username}</div>
+                    </td>
+                    <td style={tableCellStyle}>{loan.email}</td>
+                    <td style={{ ...tableCellStyle, color: "var(--gold-accent)", fontWeight: "800" }}>{formatToNaira(loan.amount)}</td>
+                    <td style={tableCellStyle}>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <button type="button" onClick={() => handleLoanResolve(loan.id, loan.uid, loan.amount, "approved")} disabled={isProcessing} className="premium-pulse-button" style={{ padding: "8px 14px", borderRadius: "6px", fontSize: "12px", background: "#10B981", color: "#fff", border: "none" }}>APPROVE</button>
+                        <button type="button" onClick={() => handleLoanResolve(loan.id, loan.uid, loan.amount, "declined")} disabled={isProcessing} style={{ padding: "8px 14px", borderRadius: "6px", fontSize: "12px", background: "#EF4444", color: "#fff", border: "none", cursor: "pointer" }}>DECLINE</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+
     </div>
   );
 }

@@ -48,3 +48,22 @@ export const approvePlatformWithdrawal = async (ticketId) => {
   await updateDoc(doc(db, "withdrawals", ticketId), { status: "successful", approvedAt: new Date().toISOString() });
 };
 
+/**
+ * Attaches a real-time data snapshot listener to stream all incoming pending loans for admin visibility.
+ */
+export const subscribeToAllPendingLoans = (onDataUpdate) => {
+  const loansQuery = query(collection(db, "loans"), where("status", "==", "pending"));
+  return onSnapshot(loansQuery, (snapshot) => {
+    onDataUpdate(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  });
+};
+
+/**
+ * Invokes our external atomic core loan updater to settle approved or declined user tickets.
+ */
+export const updateLoanTicketStatus = async (ticketId, targetUserId, loanAmount, choiceStatus) => {
+  // Imports dynamically from loans module to settle transactions natively
+  const { updateLoanTicketStatus: coreUpdater } = await import("./loans");
+  await coreUpdater(ticketId, targetUserId, loanAmount, choiceStatus);
+};
+

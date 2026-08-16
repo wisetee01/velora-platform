@@ -149,7 +149,7 @@ export default function AuthScreen({ onNavigate, preferredPlan }) {
             {isSubmitting ? "PROCESSING..." : isRegisterMode ? "COMPLETE REGISTRATION" : "SECURE LOGIN"}
           </button>
 
-          <button type="button" onClick={() => onNavigate("LANDING")} style={{ background: "transparent", border: "none", color: "var(--text-slate)", fontSize: "13px", cursor: "pointer", marginTop: "8px" }}>← Back to Landing</button>
+          <button type="button" onClick={() => onNavigate("LANDING")} style={{ background: "transparent", border: "none", color: "var(--text-slate)", fontSize: "13px", cursor: "pointer", marginTop: "8px" }}>← Back to Homepage</button>
         </form>
       </div>
       <TestimonialPopup />

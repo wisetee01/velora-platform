@@ -173,7 +173,7 @@ export default function Dashboard({ onNavigate, forceOpenActivation, onClearForc
       {/* VISUAL FLYER CARD 2 */}
       <div style={{ width: "100%", maxWidth: "1000px", background: "var(--bg-dark-card)", borderRadius: "12px", padding: "28px", display: "flex", flexDirection: "column", gap: "20px", alignItems: "center" }} className="neon-border-glow">
         <div style={{ width: "100%", maxWidth: "500px", height: "250px", borderRadius: "8px", overflow: "hidden", background: "#1a102f", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <img src="/flyer-loan.png" alt="Commission Funnel Flyer" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          <img src="/slot.png" alt="Commission Funnel Flyer" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
         </div>
         <h4 style={{ color: "var(--text-white)", margin: 0, fontSize: "18px", fontWeight: "700" }}> Accelerate Your Velora Commission Funnel</h4>
         <p style={{ color: "var(--text-slate)", fontSize: "14px", margin: 0, maxWidth: "600px", textAlign: "center" }}>Gain complete community insights, premium copy templates, and daily execution advice inside the central hub. Unrestricted entry parameters apply.</p>

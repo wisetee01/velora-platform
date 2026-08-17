@@ -144,7 +144,7 @@ export default function ActivationModal({ onClose }) {
             <div style={{ background: "var(--bg-deep-purple, #1a102f)", padding: "16px", borderRadius: "8px", border: "1px solid var(--neon-violet, #8b5cf6)", display: "flex", flexDirection: "column", gap: "10px" }}>
               
               <div style={rowStyle}>
-                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Bank Name: <strong style={{ color: "#fff" }}> Paga </strong></p>
+                <p style={{ margin: 0, fontSize: "14px", color: "var(--text-slate)" }}>Bank Name: <strong style={{ color: "#fff" }}> Paga or Pagatech </strong></p>
                 <button 
                   type="button" 
                   style={copyButtonStyle} 
@@ -185,7 +185,7 @@ export default function ActivationModal({ onClose }) {
                 className="premium-pulse-button"
                 style={{ padding: "14px", width: "100%", borderRadius: "8px", border: "none", color: "#fff", fontWeight: "600", cursor: "pointer" }}
               >
-                Send Transfer Receipt Proof
+               click here to Send Transfer Receipt
               </button>
               <button 
                 onClick={() => setShowBankDetails(false)}

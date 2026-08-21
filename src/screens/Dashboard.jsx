@@ -43,7 +43,7 @@ export default function Dashboard({ onNavigate, forceOpenActivation, onClearForc
     setLoanStatus({ type: "", text: "" });
 
     try {
-      const activeBalance = userProfile.balance !== undefined ? userProfile.balance : (userProfile.packagePlan === "gold" ? 50750 : 31500);
+      const activeBalance = userProfile.balance !== undefined ? userProfile.balance : (userProfile.packagePlan === "gold" ? 12500 : 8000);
       const unifiedContext = { ...userProfile, balance: activeBalance };
 
       await requestPlatformLoan(currentUser.uid, unifiedContext, loanAmount);
@@ -66,7 +66,7 @@ export default function Dashboard({ onNavigate, forceOpenActivation, onClearForc
   }
 
   const isAccountVerified = (userProfile.isVerified ?? userProfile.isActivated) === true;
-  const displayWalletFunds = userProfile.balance !== undefined ? userProfile.balance : (userProfile.packagePlan === "gold" ? 50750 : 31500);
+  const displayWalletFunds = userProfile.balance !== undefined ? userProfile.balance : (userProfile.packagePlan === "gold" ? 12500 : 8000);
 
 
   return (

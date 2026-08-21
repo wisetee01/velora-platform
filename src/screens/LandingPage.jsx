@@ -3,8 +3,8 @@ import TestimonialPopup from "../components/TestimonialPopup";
 import PackageCard from "../components/PackageCard";
 
 export default function LandingPage({ onNavigate }) {
-  const platinumFeatures = ["Access to Platinum Dashboard", "₦31,500 Immediate Welcome Voucher", "Daily Affiliate Commision Access", "24/7 Premium Whatsapp Channel VIP Invite"];
-  const goldFeatures = ["Access to Gold Dashboard", "₦50,750 High-Tier Welcome Voucher", "Priority Fast-Track Withdrawals", "Airtight Step-by-Step Mentorship System Link"];
+  const platinumFeatures = ["Access to Platinum Dashboard", "₦8,000 Immediate Welcome Voucher", "Daily Affiliate Commision Access", "24/7 Premium Whatsapp Channel VIP Invite"];
+  const goldFeatures = ["Access to Gold Dashboard", "₦12,500 High-Tier Welcome Voucher", "Priority Fast-Track Withdrawals", "Airtight Step-by-Step Mentorship System Link"];
 
   return (
     <div className="velora-canvas" style={{ padding: "40px 20px", display: "flex", flexDirection: "column", gap: "60px", alignItems: "center" }}>
@@ -54,7 +54,7 @@ export default function LandingPage({ onNavigate }) {
         <p style={{ color: "var(--text-slate)", fontSize: "16px", lineHeight: "1.6", marginBottom: "32px" }}>
           Why Global Earners Are Rushing to VELORA <br />
           Earn in Naira: Get paid in Naira, cash out straight to your Nigerian bank account. <br />
-          Instant Welcome Bonus: Get ₦31,500 to ₦50,750 back to WITHDRAW immediately you register. <br />
+          Instant Welcome Bonus: Get ₦8,000 to ₦14,500 back to WITHDRAW immediately you register. <br />
           Urgent Loans: Borrow money to start or grow your business with zero collateral and no stress. 
         </p>
         <CTAButton styleOverrides={{ fontSize: "16px", padding: "16px 36px" }} />
@@ -109,14 +109,14 @@ export default function LandingPage({ onNavigate }) {
         <PackageCard 
           planType="Platinum" 
           cost={9000} 
-          initialBalance={31500} 
+          initialBalance={8000} 
           features={platinumFeatures} 
           onSelectPlan={(plan) => onNavigate("AUTH", plan)} 
         />
         <PackageCard 
           planType="Gold" 
           cost={14500} 
-          initialBalance={50750} 
+          initialBalance={12500} 
           features={goldFeatures} 
           onSelectPlan={(plan) => onNavigate("AUTH", plan)} 
         />

@@ -16,7 +16,7 @@ export default function ActivationModal({ onClose }) {
 
   // DYNAMIC PRICE CHECKER: Determine the exact price based on user's registered package plan string
   const userPlan = userProfile.packagePlan ? userProfile.packagePlan.toLowerCase() : "platinum";
-  const explicitAmountToPay = userPlan === "gold" ? "₦10,000" : "₦5,000";
+  const explicitAmountToPay = userPlan === "gold" ? "₦14,500" : "₦9,000";
 
   const handlePaymentExecution = () => {
     setShowBankDetails(true);
